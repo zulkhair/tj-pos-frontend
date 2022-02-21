@@ -91,3 +91,7 @@ function redirectToLogin() {
 }
 
 init();
+
+function clearInput(inputId){
+    document.getElementById(inputId).value = ''
+}

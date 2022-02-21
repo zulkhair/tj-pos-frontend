@@ -5,7 +5,7 @@ function init() {
     }
 
     firstPath = getFirstPath()
-    fullPath = getFirstPath()
+    fullPath = getFullPath()
 
     $.ajax({
         type: "GET",

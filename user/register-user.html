@@ -98,13 +98,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0" id="welcoming-name"></h1>
+                            <h1 class="m-0">Registrasi Pengguna Baru</h1>
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/index.html">Home</a></li>
-                                <li class="breadcrumb-item active">Notifikasi</li>
+                                <li class="breadcrumb-item active">User</li>
                             </ol>
                         </div>
                         <!-- /.col -->
@@ -118,30 +118,39 @@
             <!-- Main content -->
             <section class="content">
 
-                <!-- Default box -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"></h3>
-                        25-02-2022
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                                <i class="fas fa-times"></i>
-                            </button>
+                <div class="col-md-6">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Data Pengguna</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="name">Nama</label>
+                                <input type="text" class="form-control" id="name" placeholder="Nama">
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password1">Kata Sandi</label>
+                                <input type="password" class="form-control" id="password1" placeholder="Kata Sandi">
+                            </div>
+                            <div class="form-group">
+                                <label for="password2">Ulangi Kata Sandi</label>
+                                <input type="password" class="form-control" id="password2"
+                                    placeholder="Ulangi Kata Sandi">
+                            </div>
+                            <div class="form-group">
+                                <label for="role">Role</label>
+                                <select class="form-control custom-select rounded-0" id="role" name="role" placeholder="Role"></select>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" id="btnSubmitPassword" class="btn btn-primary" onclick="register()">Submit</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        Tugas yang belum di lakukan
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer">
-                        &nbsp;
-                    </div>
-                    <!-- /.card-footer-->
-                </div>
-                <!-- /.card -->
 
             </section>
             <!-- /.content -->
@@ -173,7 +182,7 @@
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>
-    <script src="/dist/js/index.js"></script>
+    <script src="/dist/js/user/register-user.js"></script>
 </body>
 
 </html>

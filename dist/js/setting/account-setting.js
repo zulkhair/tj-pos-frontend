@@ -21,6 +21,8 @@ function editUser(){
             } else {
                 toastr.info(response.message);
                 setCookie("name", data["name"], 1)
+                clearInput("name")
+                $("#navbar-name").html(data["name"]);
             }
         }
     });
@@ -43,6 +45,9 @@ function editPassword(){
                 toastr.warning(response.message);
             } else {
                 toastr.info(response.message);
+                clearInput("password1")
+                clearInput("password2")
+                clearInput("password3")
             }
         }
     });
