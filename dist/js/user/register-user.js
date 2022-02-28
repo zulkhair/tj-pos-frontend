@@ -2,6 +2,7 @@ function init() {
     $.ajax({
         type: "GET",
         url: "/api/role/active-list",
+        async: false,
         headers: { "token": token },
         success: function (response) {
             if (response.status != 0) {

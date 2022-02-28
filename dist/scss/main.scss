@@ -17,27 +17,35 @@
 }
 
 .navbar-user {
- .navbar-role{
-   float: left;
-   margin-right: 12px;
-   #navbar-name{
-    display: block;
-   }
-   #navbar-role-name{
-    display: block;
-    font-size: 13px;
+  .navbar-role {
+    float: left;
+    margin-right: 12px;
+    #navbar-name {
+      display: block;
+    }
+    #navbar-role-name {
+      display: block;
+      font-size: 13px;
+    }
   }
- }  
- .navbar-image{
-   width: 46px;
-   height: 46px;
-   float: left;
-   background: #f4f6f9;
+  .navbar-image {
+    width: 46px;
+    height: 46px;
+    float: left;
+    background: #f4f6f9;
     border-radius: 50px;
-   i{
-    font-size: 30px;
-    padding-left: 9px;
-    padding-top: 9px;
-   }
- }
+    i {
+      font-size: 30px;
+      padding-left: 9px;
+      padding-top: 9px;
+    }
+  }
+}
+
+.btn-tbl {
+  font-size: 12px;
+  font-weight: 900 !important;
+  width: 40px;
+  display: inline-block;
+  margin: 0 4px 0 4px !important;
 }

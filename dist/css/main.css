@@ -40,4 +40,12 @@
   padding-top: 9px;
 }
 
+.btn-tbl {
+  font-size: 12px;
+  font-weight: 900 !important;
+  width: 40px;
+  display: inline-block;
+  margin: 0 4px 0 4px !important;
+}
+
 /*# sourceMappingURL=main.css.map */
