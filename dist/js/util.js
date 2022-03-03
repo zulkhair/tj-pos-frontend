@@ -1,8 +1,8 @@
-function init(){
+function init() {
     $(window).on('load', function () {
         $('#loading').hide();
     })
-    
+
     $('#loading').bind('ajaxStart', function () {
         $(this).show();
     }).bind('ajaxStop', function () {
@@ -92,6 +92,24 @@ function redirectToLogin() {
 
 init();
 
-function clearInput(inputId){
+function clearInput(inputId) {
     document.getElementById(inputId).value = ''
+}
+
+function hideTag(id) {
+    $('#' + id).attr("hidden", "hidden");
+    $('#' + id).attr("disabled", "disabled");
+}
+
+function showTag(id) {
+    $('#' + id).removeAttr("hidden");
+    $('#' + id).removeAttr("disabled");
+}
+
+function enableTag(id) {
+    $('#' + id).removeAttr("disabled");
+}
+
+function disableTag(id) {
+    $('#' + id).attr("disabled", "disabled");
 }
