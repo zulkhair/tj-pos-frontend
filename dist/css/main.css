@@ -48,4 +48,17 @@
   margin: 0 4px 0 4px !important;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
+.card-body {
+  overflow: auto;
+}
+
+.td-edit {
+  background-color: rgba(255, 220, 40, 0.15);
+  border-color: #f4f6f9 !important;
+}
+
 /*# sourceMappingURL=main.css.map */

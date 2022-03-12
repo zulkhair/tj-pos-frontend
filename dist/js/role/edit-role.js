@@ -12,7 +12,7 @@ function init() {
             "ordering": false,
             "info": false,
             "autoWidth": false,
-            "responsive": true,
+            "responsive": false,
         });
     });
 

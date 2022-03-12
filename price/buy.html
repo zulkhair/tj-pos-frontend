@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Select2 -->
-    <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">    
     <!-- Theme style -->
     <link rel="stylesheet" href="/dist/css/adminlte.min.css">
     <!-- Main -->
@@ -105,13 +105,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Produk</h1>
+                            <h1 class="m-0">Harga Beli</h1>
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/index.html">Home</a></li>
-                                <li class="breadcrumb-item active">Master Data</li>
+                                <li class="breadcrumb-item active">Harga</li>
                             </ol>
                         </div>
                         <!-- /.col -->
@@ -128,25 +128,51 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Daftar Data Produk</h3>
+                            <h3 class="card-title">Kelola Harga Beli</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <button id="add-btn" type="button" class="btn btn-primary" hidden data-toggle="modal" data-target="#add-modal" onclick="prepareAdd()">Tambah Data
-                                Produk</button>
-                            <table id="table-product" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Kode</th>
-                                        <th>Nama</th>
-                                        <th>Deskripsi</th>
-                                        <th>Status</th>
-                                        <th width="48px"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="product-data-body">
-                                </tbody>
-                            </table>
+                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
+                                <div class="form-group">
+                                    <label for="supplier" class="col-md-2">Supplier</label>
+                                    <select class="form-control select2 col-md-7"
+                                        id="supplier-modal-select" name="supplier" placeholder="Supplier" onchange="initData()"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="supplier" class="col-md-2">Satuan</label>
+                                    <select class="form-control select2 col-md-7" id="unit-modal-select"
+                                        name="unit" placeholder="Satuan" onchange="initData()"></select>
+                                    <button type="button" class="btn btn-primary" title="Tambah Data Satuan" data-toggle="modal" data-target="#add-modal" onclick="prepareAdd()"><span
+                                            class="fas fa-plus"></span></button>
+                                    <button type="button" class="btn btn-primary" title="Hapus Data Satuan" data-toggle="modal" data-target="#edit-modal"><span
+                                            class="fas fa-trash"></span></button>
+                                </div>
+                                <div class="form-group">
+                                    <label for="datetime" class="col-md-2">Tanggal</label>
+                                    <input type="date" class="form-control col-md-7 inline-block" id="date"
+                                        name="datetime" placeholder="Tanggal" onchange="initData()">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <table id="table-product" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Kode</th>
+                                                <th>Nama</th>
+                                                <th>Deskripsi</th>
+                                                <th>Harga</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="product-data-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary col-md-12 col-sm-12 col-lg-12 col-xl-12"
+                                    title="Edit Data Satuan" onclick="prepareSubmit()">Submit</button>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -161,7 +187,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Tambah Data Produk</h4>
+                        <h4 class="modal-title">Tambah Data Satuan</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -169,21 +195,17 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name">Kode</label>
-                            <input type="text" class="form-control" id="code" placeholder="Kode Produk">
-                        </div>
-                        <div class="form-group">
-                            <label>Nama</label>
-                            <input type="text" class="form-control" id="name" placeholder="Nama Produk">
+                            <input type="text" class="form-control" id="unitCode" placeholder="Kode Produk">
                         </div>
                         <div class="form-group">
                             <label>Deskripsi</label>
-                            <input type="text" class="form-control" id="description" placeholder="Deskripsi Produk">
+                            <input type="text" class="form-control" id="unitDescription" placeholder="Deskripsi Produk">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                            onclick="submit()">Submit</button>
+                            onclick="submitUnit()">Submit</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -196,35 +218,43 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Perbarui Data Produk</h4>
+                        <h4 class="modal-title">Hapus Data Satuan</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Kode</label>
-                            <input type="text" class="form-control" id="code-edit" placeholder="Kode Produk">
-                        </div>
-                        <div class="form-group">
-                            <label>Nama</label>
-                            <input type="text" class="form-control" id="name-edit" placeholder="Nama Produk">
-                        </div>
-                        <div class="form-group">
-                            <label>Deskripsi</label>
-                            <input type="text" class="form-control" id="description-edit" placeholder="Deskripsi Produk">
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select class="form-control custom-select rounded-0" id="active-modal-select" name="status"
-                                placeholder="Status"></select>
-                        </div>
+                        Data harga dengan satuan ini akan ikut terhapus, apakah anda yakin akan melanjutkan?
+                     </div>
+                     <div class="modal-footer justify-content-between">
+                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+                         <button type="button" class="btn btn-primary" data-dismiss="modal"
+                             onclick="editUnit()">Ya</button>
+                     </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="submit-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Hapus Data Satuan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"
-                            onclick="editProduct()">Ubah</button>
-                    </div>
+                    <div class="modal-body">
+                        Apakah anda yakin untuk melakukan pembaruan harga?
+                     </div>
+                     <div class="modal-footer justify-content-between">
+                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+                         <button type="button" class="btn btn-primary" data-dismiss="modal"
+                             onclick="submit()">Ya</button>
+                     </div>
                 </div>
                 <!-- /.modal-content -->
             </div>
@@ -273,7 +303,8 @@
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>
-    <script src="/dist/js/master/product.js"></script>
+    <script src="/dist/js/price/buy.js"></script>
+    <script src="/dist/js/post.js"></script>
 </body>
 
 </html>
