@@ -213,7 +213,7 @@ function submit() {
 
     $.ajax({
         type: "POST",
-        url: "/api/customer/sell-price",
+        url: "/api/customer/update-sell-price",
         headers: { "token": token },
         data: JSON.stringify(data),
         async: false,
