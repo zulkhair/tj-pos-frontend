@@ -1,48 +1,53 @@
 var products;
+var productPriceMap = {};
+var selectedProductId;
+var tableProduct;
+var tableHistory;
 
 function init() {
-    $.ajax({
-        type: "GET",
-        url: "/api/supplier/find",
-        headers: { "token": token },
-        data: { "active": true },
-        async: false,
-        success: function (response) {
-            if (response.status != 0) {
-                toastr.warning(response.message);
-            } else {
-                optionhtml = '';
-                for (i in response.data) {
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + ' | ' + response.data[i].name + '</option>';
-                }
-                $('#supplier-modal-select').html(optionhtml);
-            }
-        }
+    $('.select2').select2()
+
+    tableProduct = $("#table-product").DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": false,
+        "info": false,
+        "autoWidth": true,
+        "responsive": false,
+        "columns": [
+            null,
+            null,
+            null,
+            { className: "numeric" },
+            null
+        ]
+    });
+
+    tableHistory = $("#table-history-price").DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": false,
+        "ordering": false,
+        "info": false,
+        "autoWidth": false,
+        "responsive": false,
+        "columns": [
+            null,
+            { className: "numeric" },
+            null
+        ]
     });
 
     initUnit();
-
-    $('.select2').select2()
-
-    $(function () {
-        $("#table-product").DataTable({
-            "paging": false,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": false,
-            "info": false,
-            "autoWidth": false,
-            "responsive": false,
-        });
-    });
+    initData();
 }
 
 function initData() {
-    supplierId = $('#supplier-modal-select').val();
+    tableProduct.clear().draw();
     unitId = $('#unit-modal-select').val();
-    date = $('#date').val();
 
-    if (supplierId !== "" && unitId !== "" && date !== "") {
+    if (unitId !== "") {
         $.ajax({
             type: "GET",
             url: "/api/product/find",
@@ -63,12 +68,10 @@ function initData() {
         var mapPrice = {};
         $.ajax({
             type: "GET",
-            url: "/api/supplier/buy-price",
+            url: "/api/supplier/find-latest-price",
             headers: { "token": token },
             data: {
-                "supplierId": supplierId,
                 "unitId": unitId,
-                "date": date,
             },
             async: false,
             success: function (response) {
@@ -82,22 +85,28 @@ function initData() {
             }
         });
 
-        html = '';
         for (i in products) {
             var price = 0;
             if (mapPrice[products[i].id] !== undefined) {
                 price = mapPrice[products[i].id].price;
             }
 
-            html += '<tr>';
-            html += '<td>' + products[i].code + '</td>';
-            html += '<td>' + products[i].name + '</td>';
-            html += '<td>' + products[i].description + '</td>';
-            html += '<td contenteditable=\'true\' class="td-edit allow_only_numbers">' + price + '</td>';
-            html += '</tr>';
+            product = {
+                "id": products[i].id,
+                "price": price,
+            }
+
+            productPriceMap[products[i].id] = product
+
+            tableProduct.row.add([
+                products[i].code,
+                products[i].name,
+                products[i].description,
+                price,
+                '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products[i].id + '\');"></button><button data-toggle="modal" data-target="#view-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="Edit" onclick="prepareView(\'' + products[i].id + '\');"></button>'
+            ]).draw(false);
         }
 
-        $('#product-data-body').html(html);
     }
 }
 
@@ -173,47 +182,26 @@ function editUnit() {
     });
 }
 
-function prepareSubmit() {
-    supplierId = $('#supplier-modal-select').val();
-    unitId = $('#unit-modal-select').val();
-    date = $('#date').val();
-
-    if (supplierId !== "" && unitId !== "" && date !== "") {
-        $("#submit-modal").modal()
-    }
-
+function prepareSubmit(productId) {
+    selectedProductId = productId
+    $("#price").val(productPriceMap[productId].price);
 }
 
 function submit() {
-    supplierId = $('#supplier-modal-select').val();
+    customerId = $('#supplier-modal-select').val();
     unitId = $('#unit-modal-select').val();
-    date = $('#date').val();
+    price = $("#price").val();
+    productId = selectedProductId;
 
-
-
-    var prices = []
-
-    var oTable = document.getElementById('table-product');
-    var rowLength = oTable.rows.length;
-    for (i = 1; i < rowLength; i++) {
-        var oCells = oTable.rows.item(i).cells;
-        var productId = products[i-1].id
-        var price = oCells.item(3).innerHTML;
-        prices.push({ "productId": productId, "price": parseFloat(price)})
-    }
-
-    var data = {
-        "date": date,
-        "supplierId": supplierId,
+    data = {
         "unitId": unitId,
-        "prices": prices
+        "productId": productId,
+        "price": parseInt(price),
     }
-
-    token = getCookie("token");
 
     $.ajax({
         type: "POST",
-        url: "/api/supplier/update-buy-price",
+        url: "/api/supplier/add-price",
         headers: { "token": token },
         data: JSON.stringify(data),
         async: false,
@@ -222,7 +210,39 @@ function submit() {
                 toastr.warning(response.message);
             } else {
                 toastr.info(response.message);
-                initUnit()
+                initData()
+                selectedProductId = ""
+            }
+        }
+    });
+}
+
+function prepareView(productId) {
+    customerId = $('#supplier-modal-select').val();
+    unitId = $('#unit-modal-select').val();
+    tableProduct.clear().draw();
+
+    $.ajax({
+        type: "GET",
+        url: "/api/supplier/find-price",
+        headers: { "token": token },
+        data: {
+            "unitId": unitId,
+            "productId": productId,
+        },
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                var t = $('#table-history-price').DataTable();
+                for (i in response.data) {
+                    t.row.add([
+                        response.data[i].date,
+                        response.data[i].price,
+                        response.data[i].webUserName + ' (' + response.data[i].webUsername + ')'
+                    ]).draw(false);
+                }
             }
         }
     });

@@ -134,11 +134,6 @@
                         <div class="card-body">
                             <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
                                 <div class="form-group">
-                                    <label for="supplier" class="col-md-2">Supplier</label>
-                                    <select class="form-control select2 col-md-7"
-                                        id="supplier-modal-select" name="supplier" placeholder="Supplier" onchange="initData()"></select>
-                                </div>
-                                <div class="form-group">
                                     <label for="supplier" class="col-md-2">Satuan</label>
                                     <select class="form-control select2 col-md-7" id="unit-modal-select"
                                         name="unit" placeholder="Satuan" onchange="initData()"></select>
@@ -147,12 +142,8 @@
                                     <button type="button" class="btn btn-primary" title="Hapus Data Satuan" data-toggle="modal" data-target="#edit-modal"><span
                                             class="fas fa-trash"></span></button>
                                 </div>
-                                <div class="form-group">
-                                    <label for="datetime" class="col-md-2">Tanggal</label>
-                                    <input type="date" class="form-control col-md-7 inline-block" id="date"
-                                        name="datetime" placeholder="Tanggal" onchange="initData()">
-                                </div>
                             </div>
+                            <br/>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <table id="table-product" class="table table-bordered table-striped">
@@ -162,16 +153,13 @@
                                                 <th>Nama</th>
                                                 <th>Deskripsi</th>
                                                 <th>Harga</th>
+                                                <th style="width: 96px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="product-data-body">
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-primary col-md-12 col-sm-12 col-lg-12 col-xl-12"
-                                    title="Edit Data Satuan" onclick="prepareSubmit()">Submit</button>
                             </div>
                         </div>
                         <!-- /.card-body -->
@@ -242,19 +230,54 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Hapus Data Satuan</h4>
+                        <h4 class="modal-title">Edit Data Harga</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah anda yakin untuk melakukan pembaruan harga?
-                     </div>
-                     <div class="modal-footer justify-content-between">
-                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
-                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                             onclick="submit()">Ya</button>
-                     </div>
+                        <div class="form-group">
+                            <label>Harga</label>
+                            <input type="number" class="form-control" id="price" placeholder="Harga">
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            onclick="submit()">Ya</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <div class="modal fade" id="view-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">History data harga</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="table-history-price" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Harga</th>
+                                    <th>User</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-data-body">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                    </div>
                 </div>
                 <!-- /.modal-content -->
             </div>

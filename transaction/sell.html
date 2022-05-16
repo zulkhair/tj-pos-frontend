@@ -157,9 +157,14 @@
                                         placeholder="Satuan" onchange="initHarga()"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="price" class="col-md-2">Harga</label>
+                                    <label for="buy-price" class="col-md-2">Harga Beli</label>
+                                    <input type="number" class="form-control col-md-7 inline-block" id="buy-price"
+                                        name="buy-price">
+                                </div>
+                                <div class="form-group">
+                                    <label for="price" class="col-md-2">Harga Jual</label>
                                     <input type="number" class="form-control col-md-7 inline-block" id="price"
-                                        name="price" disabled>
+                                        name="price">
                                 </div>
                                 <div class="form-group">
                                     <label for="quantity" class="col-md-2">Jumlah</label>
@@ -177,7 +182,8 @@
                                             <tr>
                                                 <th>Produk</th>
                                                 <th>Satuan</th>
-                                                <th>Harga</th>
+                                                <th>Harga Beli</th>
+                                                <th>Harga Jual</th>
                                                 <th>Jumlah</th>
                                                 <th>Total</th>
                                                 <th style="width: 20px;"></th>

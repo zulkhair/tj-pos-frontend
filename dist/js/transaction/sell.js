@@ -1,18 +1,30 @@
-var mapProduct = {};
-var mapUnit = {};
+var mapProduct = new Map();
+var mapUnit = new Map();
 var dataRow = [];
-var mapProductVal = {};
+var mapProductVal = new Map();
+var tableProduct;
 
 function init() {
-    mapProduct = {};
-    mapUnit = {};
+    mapProduct = new Map();
+    mapUnit = new Map();
     dataRow = [];
-    mapProductVal = {};
+    mapProductVal = new Map();
+
+    tableProduct = $("#table-product").DataTable({
+        "paging": false,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": false,
+        "info": false,
+        "autoWidth": false,
+        "responsive": false,
+    });
 
 
     initCustomer();
     initUnit();
     initProduct();
+    initHarga();
     reloadTable();
 }
 
@@ -50,7 +62,7 @@ function initUnit() {
             } else {
                 optionhtml = '';
                 for (i in response.data) {
-                    mapUnit[response.data[i].id] = response.data[i]
+                    mapUnit.set(response.data[i].id, response.data[i])
                     optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
                 }
                 $('#unit-select').html(optionhtml);
@@ -74,7 +86,7 @@ function initProduct() {
             } else {
                 optionhtml = '';
                 for (i in response.data) {
-                    mapProduct[response.data[i].id] = response.data[i]
+                    mapProduct.set(response.data[i].id, response.data[i])
                     optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + " (" + response.data[i].name + ")" + '</option>';
                 }
                 $('#product-select').html(optionhtml);
@@ -86,20 +98,19 @@ function initProduct() {
 
 function initHarga() {
     unitId = $('#unit-select').val();
-    date = $('#date').val();
     productId = $('#product-select').val();
     customerId = $('#customer-select').val();
 
-    if (unitId !== "" && date !== "" && productId !== "") {
+    if (unitId !== "" && productId !== "") {
         $.ajax({
             type: "GET",
-            url: "/api/customer/sell-price",
+            url: "/api/customer/find-price",
             headers: { "token": token },
             data: {
                 "unitId": unitId,
-                "date": date,
                 "productId": productId,
                 "customerId": customerId,
+                "latest": "true",
             },
             async: false,
             success: function (response) {
@@ -114,12 +125,35 @@ function initHarga() {
                 }
             }
         });
+
+        $.ajax({
+            type: "GET",
+            url: "/api/supplier/find-price",
+            headers: { "token": token },
+            data: {
+                "unitId": unitId,
+                "productId": productId,
+                "latest": "true",
+            },
+            async: false,
+            success: function (response) {
+                if (response.status != 0) {
+                    toastr.warning(response.message);
+                } else {
+                    if (response.data) {
+                        $("#buy-price").val(response.data[0].price);
+                    } else {
+                        $("#buy-price").val(0);
+                    }
+                }
+            }
+        });
     }
 }
 
 function changeMasterData() {
     dataRow = [];
-    mapProductVal = {};
+    mapProductVal = new Map();
     reloadTable();
     initHarga();
 }
@@ -128,55 +162,57 @@ function changeMasterData() {
 function addRow() {
     prodId = $('#product-select').val()
     unitId = $('#unit-select').val()
-    productId = mapProductVal[$('#product-select').val()];
+    productId = mapProductVal.get($('#product-select').val());
 
-    if (productId !== undefined) {
-        toastr.warning("Data produk dengan kode '" + mapProduct[productId].code + "' sudah ada");
-    } else if ($("#price").val() == 0) {
-        toastr.warning("Harga produk dengan kode '" + mapProduct[prodId].code + "' dengan satuan " + mapUnit[unitId].code + " di tanggal " + $('#date').val() + " belum ditambahkan");
-    } else {
-        mapProductVal[prodId] = prodId
-        dataRow.push(
-            {
-                "productId": prodId,
-                "unitId": unitId,
-                "price": parseInt($("#price").val()),
-                "quantity": parseInt($("#quantity").val()),
-            }
-        )
+    if ($("#quantity").val() != "") {
+        if (productId !== undefined) {
+            toastr.warning("Data produk dengan kode '" + mapProduct.get(productId).code + "' sudah ada");
+        } else {
+            mapProductVal.set(prodId, prodId)
+            dataRow.push(
+                {
+                    "productId": prodId,
+                    "unitId": unitId,
+                    "buyPrice": parseInt($("#buy-price").val()),
+                    "price": parseInt($("#price").val()),
+                    "quantity": parseInt($("#quantity").val()),
+                }
+            )
 
-        reloadTable();
+            reloadTable();
+        }
     }
-
 
     $("#quantity").val("");
 }
 
 function removeRow(index) {
+    mapProductVal.delete(dataRow[index].productId);
+
     dataRow.splice(index, 1);
     reloadTable();
 }
 
 function reloadTable() {
     total = 0;
-    html = '';
+    tableProduct.clear().draw();
     for (i in dataRow) {
-        html += '<tr>';
-        html += '<td>' + mapProduct[dataRow[i].productId].code + " (" + mapProduct[dataRow[i].productId].name + ")" + '</td>';
-        html += '<td>' + mapUnit[dataRow[i].unitId].code + '</td>';
-        html += '<td class="numeric">' + dataRow[i].price + '</td>';
-        html += '<td class="numeric">' + dataRow[i].quantity + '</td>';
-        html += '<td class="numeric">' + (dataRow[i].price * dataRow[i].quantity) + '</td>';
-        html += '<td><button type="button" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus" onclick="removeRow(' + i + ');"></button>';
-        html += '</tr>';
+        tableProduct.row.add([
+            mapProduct.get(dataRow[i].productId).code + " (" + mapProduct.get(dataRow[i].productId).name + ")",
+            mapUnit.get(dataRow[i].unitId).code,
+            dataRow[i].buyPrice,
+            dataRow[i].price,
+            dataRow[i].quantity,
+            (dataRow[i].price * dataRow[i].quantity),
+            '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus" onclick="removeRow(' + i + ');"></button>'
+        ]).draw(false);
 
-        total = total + (dataRow[i].price * dataRow[i].quantity)
+        total = total + (dataRow[i].price * dataRow[i].quantity);
     }
 
-    $('#product-data-body').html(html);
 
-    footer = '<tr><td colspan="4"><strong>Total</strong></td><td class="numeric"><strong>' + total + '</strong></td><td></td></tr>';
-    $('#product-data-footer').html(footer)
+    footer = '<tr><td colspan="5"><strong>Total</strong></td><td class="numeric"><strong>' + total + '</strong></td><td></td></tr>';
+    $('#product-data-footer').html(footer);
 }
 
 function submit() {
@@ -215,15 +251,3 @@ function submit() {
 
 init();
 $('.select2').select2()
-
-$(function () {
-    $("#table-product").DataTable({
-        "paging": false,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": false,
-        "info": false,
-        "autoWidth": false,
-        "responsive": false,
-    });
-});
