@@ -156,12 +156,25 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Ubah status</h4>
+                        <h4 class="modal-title">Edit Data</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Nama</label>
+                            <input type="text" class="form-control" id="name" placeholder="Nama">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <label for="role-modal-select">Role</label>
+                            <select class="form-control custom-select rounded-0" id="role-modal-select" name="role"
+                                placeholder="Role"></select>
+                        </div>
                         <div class="form-group">
                             <label for="status">Status</label>
                             <select class="form-control custom-select rounded-0" id="active-modal-select" name="status"

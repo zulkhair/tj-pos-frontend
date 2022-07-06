@@ -3,6 +3,7 @@ var productPriceMap = {};
 var selectedProductId;
 var tableProduct;
 var tableHistory;
+var mapUnit = {};
 
 function init() {
     $('.select2').select2()
@@ -35,6 +36,7 @@ function init() {
         "columns": [
             null,
             { className: "numeric" },
+            null,
             null
         ]
     });
@@ -45,72 +47,66 @@ function init() {
 
 function initData() {
     tableProduct.clear().draw();
-    unitId = $('#unit-modal-select').val();
 
-    if (unitId !== "") {
-        $.ajax({
-            type: "GET",
-            url: "/api/product/find",
-            headers: { "token": token },
-            data: {
-                "active": true
-            },
-            async: false,
-            success: function (response) {
-                if (response.status != 0) {
-                    toastr.warning(response.message);
-                } else {
-                    products = response.data;
+    $.ajax({
+        type: "GET",
+        url: "/api/product/findActive",
+        headers: { "token": token },
+        data: {
+            "active": true
+        },
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                products = response.data;
+            }
+        }
+    });
+
+    var mapPrice = {};
+    $.ajax({
+        type: "GET",
+        url: "/api/supplier/find-latest-price",
+        headers: { "token": token },
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                for (i in response.data) {
+                    mapPrice[response.data[i].productId] = response.data[i]
                 }
             }
-        });
+        }
+    });
 
-        var mapPrice = {};
-        $.ajax({
-            type: "GET",
-            url: "/api/supplier/find-latest-price",
-            headers: { "token": token },
-            data: {
-                "unitId": unitId,
-            },
-            async: false,
-            success: function (response) {
-                if (response.status != 0) {
-                    toastr.warning(response.message);
-                } else {
-                    for (i in response.data) {
-                        mapPrice[response.data[i].productId] = response.data[i]
-                    }
-                }
-            }
-        });
-
-        for (i in products) {
-            var price = 0;
-            if (mapPrice[products[i].id] !== undefined) {
-                price = mapPrice[products[i].id].price;
-            }
-
-            product = {
-                "id": products[i].id,
-                "price": price,
-            }
-
-            productPriceMap[products[i].id] = product
-
-            tableProduct.row.add([
-                products[i].code,
-                products[i].name,
-                products[i].description,
-                price,
-                '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products[i].id + '\');"></button><button data-toggle="modal" data-target="#view-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="Edit" onclick="prepareView(\'' + products[i].id + '\');"></button>'
-            ]).draw(false);
+    for (i in products) {
+        var price = 0;
+        if (mapPrice[products[i].id] !== undefined) {
+            price = mapPrice[products[i].id].price;
         }
 
+        product = {
+            "id": products[i].id,
+            "price": price,
+        }
+
+        productPriceMap[products[i].id] = product
+
+        tableProduct.row.add([
+            products[i].code,
+            products[i].name,
+            mapUnit[products[i].unitId].code,
+            price,
+            '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products[i].id + '\');"></button><button data-toggle="modal" data-target="#view-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="Edit" onclick="prepareView(\'' + products[i].id + '\');"></button>'
+        ]).draw(false);
     }
 }
 
 function initUnit() {
+    mapUnit = {};
     $.ajax({
         type: "GET",
         url: "/api/unit/find",
@@ -121,11 +117,9 @@ function initUnit() {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                optionhtml = '';
                 for (i in response.data) {
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
-                }
-                $('#unit-modal-select').html(optionhtml);
+                    mapUnit[response.data[i].id] = response.data[i]
+                }                
             }
         }
     });
@@ -220,7 +214,7 @@ function submit() {
 function prepareView(productId) {
     customerId = $('#supplier-modal-select').val();
     unitId = $('#unit-modal-select').val();
-    tableProduct.clear().draw();
+    tableHistory.clear();
 
     $.ajax({
         type: "GET",
@@ -235,12 +229,12 @@ function prepareView(productId) {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                var t = $('#table-history-price').DataTable();
                 for (i in response.data) {
-                    t.row.add([
+                    tableHistory.row.add([
                         response.data[i].date,
                         response.data[i].price,
-                        response.data[i].webUserName + ' (' + response.data[i].webUsername + ')'
+                        response.data[i].webUserName + ' (' + response.data[i].webUsername + ')',
+                        response.data[i].transactionCode
                     ]).draw(false);
                 }
             }

@@ -132,14 +132,15 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <button id="add-btn" type="button" class="btn btn-primary" hidden data-toggle="modal" data-target="#add-modal" onclick="prepareAdd()">Tambah Data
+                            <button id="add-btn" type="button" class="btn btn-primary" hidden data-toggle="modal"
+                                data-target="#add-modal" onclick="prepareAdd()">Tambah Data
                                 Produk</button>
                             <table id="table-product" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Kode</th>
-                                        <th>Nama</th>
-                                        <th>Deskripsi</th>
+                                        <th>Satuan</th>
+                                        <th>Nama</th>                                        
                                         <th>Status</th>
                                         <th width="48px"></th>
                                     </tr>
@@ -172,12 +173,13 @@
                             <input type="text" class="form-control" id="code" placeholder="Kode Produk">
                         </div>
                         <div class="form-group">
-                            <label>Nama</label>
-                            <input type="text" class="form-control" id="name" placeholder="Nama Produk">
+                            <label for="supplier">Satuan</label>
+                            <select class="form-control select2" id="unit-modal-select" name="unit"
+                                placeholder="Satuan"></select>
                         </div>
                         <div class="form-group">
-                            <label>Deskripsi</label>
-                            <input type="text" class="form-control" id="description" placeholder="Deskripsi Produk">
+                            <label>Nama</label>
+                            <input type="text" class="form-control" id="name" placeholder="Nama Produk">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -212,7 +214,8 @@
                         </div>
                         <div class="form-group">
                             <label>Deskripsi</label>
-                            <input type="text" class="form-control" id="description-edit" placeholder="Deskripsi Produk">
+                            <input type="text" class="form-control" id="description-edit"
+                                placeholder="Deskripsi Produk">
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>

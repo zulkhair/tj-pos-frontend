@@ -105,13 +105,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Harga Jual</h1>
+                            <h1 class="m-0">Penjualan</h1>
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/index.html">Home</a></li>
-                                <li class="breadcrumb-item active">Harga</li>
+                                <li class="breadcrumb-item active">Transaksi</li>
                             </ol>
                         </div>
                         <!-- /.col -->
@@ -128,31 +128,51 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Kelola Harga Jual</h3>
+                            <h3 class="card-title">Tambah Data Penjualan</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
+                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">                           
                                 <div class="form-group">
-                                    <label for="supplier" class="col-md-2">Customer</label>
-                                    <select class="form-control select2 col-md-7" id="supplier-modal-select"
-                                        name="supplier" placeholder="Supplier" onchange="initData()"></select>
+                                    <label for="datetime" class="col-md-2">Tanggal Awal</label>
+                                    <input type="date" class="form-control col-md-7 inline-block" id="startDate"
+                                        name="datetime" placeholder="Tanggal" onchange="reloadTable()" />
                                 </div>
-                            </div>
+                                <div class="form-group">
+                                    <label for="datetime" class="col-md-2">Tanggal Akhir</label>
+                                    <input type="date" class="form-control col-md-7 inline-block" id="endDate"
+                                        name="datetime" placeholder="Tanggal" onchange="reloadTable()" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="customer" class="col-md-2">Customer</label>
+                                    <select class="form-control select2 col-md-7" id="customer-select" name="customer"
+                                        placeholder="Customer" onchange="reloadTable()"></select>
+                                </div>
+                            </div>                           
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <table id="table-product" class="table table-bordered table-striped">
+                                    <table id="table-trx" class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Kode</th>
-                                                <th>Nama</th>
-                                                <th>Satuan</th>
-                                                <th>Harga</th>
-                                                <th style="width: 96px;"></th>
+                                                <th><p style="margin:0;padding:12px;">Tanggal</p></th>
+                                                <th><p style="margin:0;padding:12px;">No Faktur</p></th>
+                                                <th><p style="margin:0;padding:12px;">No PO</p></th>                                                
+                                                <th><p style="margin:0;padding:12px;">Produk</p></th>
+                                                <th><p style="margin:0;padding:12px;">Jumlah Beli</p></th>
+                                                <th><p style="margin:0;padding:12px;">Harga Beli</p></th>
+                                                <th><p style="margin:0;padding:12px;">Total Beli</p></th>  
+                                                <th><p style="margin:0;padding:12px;">Jumlah Jual</p></th>
+                                                <th><p style="margin:0;padding:12px;">Harga Jual</p></th>
+                                                <th><p style="margin:0;padding:12px;">Total Jual</p></th>                                                                                                    
+                                                <th><p style="margin:0;padding:12px;">L/R</p></th>                       
                                             </tr>
                                         </thead>
-                                        <tbody id="product-data-body">
-                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="10" style="text-align:right"><p style="margin:0;padding:12px;">Total</p></th>
+                                                <th id="total"></th>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
@@ -170,54 +190,18 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Edit Data Harga</h4>
+                        <h4 class="modal-title">Submit Transaksi</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>Harga</label>
-                            <input type="number" class="form-control" id="price" placeholder="Harga">
-                        </div>
+                        Apakah anda yakin untuk memperbarui status transaksi ini?
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                            onclick="submit()">Ya</button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
-
-        <div class="modal fade" id="view-modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">History data harga</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table id="table-history-price" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Harga</th>
-                                    <th>User</th>
-                                    <th>Kode Transaksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-data-body">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                            onclick="updateStatus()">Ya</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -267,7 +251,7 @@
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>
-    <script src="/dist/js/price/sell.js"></script>
+    <script src="/dist/js/transaction/report.js"></script>
     <script src="/dist/js/post.js"></script>
 </body>
 

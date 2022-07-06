@@ -1,15 +1,16 @@
 var mapProduct = new Map();
+var mapProductCodeName = new Map();
+var arrProduct = [];
 var mapUnit = new Map();
 var dataRow = [];
+var mapData = new Map();
 var mapProductVal = new Map();
 var tableProduct;
+var index = 0;
+var mapHarga = new Map();
+var mapIndex = new Map();
 
 function init() {
-    mapProduct = new Map();
-    mapUnit = new Map();
-    dataRow = [];
-    mapProductVal = new Map();
-
     tableProduct = $("#table-product").DataTable({
         "paging": false,
         "lengthChange": false,
@@ -20,12 +21,31 @@ function init() {
         "responsive": false,
     });
 
+    initData();
+    $('.select2').select2()
+}
+
+function initData() {
+    mapProduct = new Map();
+    mapUnit = new Map();
+    dataRow = [];
+    mapProductVal = new Map();
+    tableProduct.clear();
+
+    today = new Date();
+    yyyy = today.getFullYear();
+    mm = today.getMonth() + 1; // Months start at 0!
+    dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $('#date').val(today);
 
     initCustomer();
-    initUnit();
     initProduct();
-    initHarga();
-    reloadTable();
+    addNewRow();
 }
 
 function initCustomer() {
@@ -49,32 +69,11 @@ function initCustomer() {
     });
 }
 
-function initUnit() {
-    $.ajax({
-        type: "GET",
-        url: "/api/unit/find",
-        headers: { "token": token },
-        data: { "active": true },
-        async: false,
-        success: function (response) {
-            if (response.status != 0) {
-                toastr.warning(response.message);
-            } else {
-                optionhtml = '';
-                for (i in response.data) {
-                    mapUnit.set(response.data[i].id, response.data[i])
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
-                }
-                $('#unit-select').html(optionhtml);
-            }
-        }
-    });
-}
-
 function initProduct() {
+    arrProduct = [];
     $.ajax({
         type: "GET",
-        url: "/api/product/find",
+        url: "/api/product/findActive",
         headers: { "token": token },
         data: {
             "active": true
@@ -84,30 +83,26 @@ function initProduct() {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                optionhtml = '';
                 for (i in response.data) {
-                    mapProduct.set(response.data[i].id, response.data[i])
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + " (" + response.data[i].name + ")" + '</option>';
+                    mapProduct.set(response.data[i].id, response.data[i]);
+                    mapProductCodeName.set(response.data[i].code + ' | '+ response.data[i].name, response.data[i])
+                    arrProduct.push(response.data[i]);
                 }
-                $('#product-select').html(optionhtml);
 
             }
         }
     });
 }
 
-function initHarga() {
-    unitId = $('#unit-select').val();
-    productId = $('#product-select').val();
+function initHarga(productId, index) {
     customerId = $('#customer-select').val();
 
-    if (unitId !== "" && productId !== "") {
+    if (productId !== "") {
         $.ajax({
             type: "GET",
             url: "/api/customer/find-price",
             headers: { "token": token },
             data: {
-                "unitId": unitId,
                 "productId": productId,
                 "customerId": customerId,
                 "latest": "true",
@@ -118,9 +113,9 @@ function initHarga() {
                     toastr.warning(response.message);
                 } else {
                     if (response.data) {
-                        $("#price").val(response.data[0].price);
+                        $("#jual-" + index).val(response.data[0].price);
                     } else {
-                        $("#price").val(0);
+                        $("#jual-" + index).val(0);
                     }
                 }
             }
@@ -131,7 +126,6 @@ function initHarga() {
             url: "/api/supplier/find-price",
             headers: { "token": token },
             data: {
-                "unitId": unitId,
                 "productId": productId,
                 "latest": "true",
             },
@@ -141,9 +135,9 @@ function initHarga() {
                     toastr.warning(response.message);
                 } else {
                     if (response.data) {
-                        $("#buy-price").val(response.data[0].price);
+                        $("#beli-" + index).val(response.data[0].price);
                     } else {
-                        $("#buy-price").val(0);
+                        $("#beli-" + index).val(0);
                     }
                 }
             }
@@ -152,79 +146,224 @@ function initHarga() {
 }
 
 function changeMasterData() {
+    index = 0;
     dataRow = [];
-    mapProductVal = new Map();
-    reloadTable();
-    initHarga();
+    mapData = new Map();
+    addNewRow();
 }
 
+function removeRow(value) {
+    values = value.split(",");
 
-function addRow() {
-    prodId = $('#product-select').val()
-    unitId = $('#unit-select').val()
-    productId = mapProductVal.get($('#product-select').val());
+    dataRow.splice(values[1], 1);
+    mapData.delete(values[0]);
 
-    if ($("#quantity").val() != "") {
-        if (productId !== undefined) {
-            toastr.warning("Data produk dengan kode '" + mapProduct.get(productId).code + "' sudah ada");
-        } else {
-            mapProductVal.set(prodId, prodId)
-            dataRow.push(
-                {
-                    "productId": prodId,
-                    "unitId": unitId,
-                    "buyPrice": parseInt($("#buy-price").val()),
-                    "price": parseInt($("#price").val()),
-                    "quantity": parseInt($("#quantity").val()),
-                }
-            )
-
-            reloadTable();
-        }
+    if (dataRow.length == 0) {
+        addNewRow();   
     }
-
-    $("#quantity").val("");
+    
+    reloadTable(undefined)
 }
 
-function removeRow(index) {
-    mapProductVal.delete(dataRow[index].productId);
+function getProductDropdown(index) {
+    optionhtml = '<select class="select2" id="product-select-' + index + '" value="" style="width:200px" onchange="productChange(' + index + ')">';
+    optionhtml = optionhtml + '<option value="">-</option>';
+    for (i in arrProduct) {
+        optionhtml = optionhtml + '<option value="' + arrProduct[i].id + '">' + arrProduct[i].code + '</option>';
+    }
+    optionhtml = optionhtml + '</select>';
 
-    dataRow.splice(index, 1);
-    reloadTable();
+    return optionhtml;
 }
 
-function reloadTable() {
-    total = 0;
-    tableProduct.clear().draw();
+function getProductInput(index) {
+    optionhtml = '<input type="text" class="form-control" id="product-select-' + index + '" value="" list="products" style="width:200px" onkeyup="productChange(' + index + ')">';
+    optionhtml = optionhtml + '<datalist id="products">';
+    for (i in arrProduct) {
+        optionhtml = optionhtml + '<option>' + arrProduct[i].code + ' | '+ arrProduct[i].name + '</option>';
+    }
+    optionhtml = optionhtml + '</datalist></input>';
+
+    return optionhtml;
+}
+
+function getText(id, index, type, placeholder, disabled, func) {
+    return '<input ' + disabled + ' class="form-control" type="' + type + '" id="' + id + '-' + index + '" placeholder="' + placeholder + '" onkeyup="' + func + '(' + index + ')"/>'
+}
+
+function addNewRow() {
+    index++;
+    dataRow.push(index);
+    mapData.set(index, {
+        "productCodeName": "",
+        "jumlah": "",
+        "satuan": "",
+        "jual": "",
+        "beli": ""
+    })
+    reloadTable(index);
+}
+
+function reloadTable(indexnew) {
+    tableProduct.clear();
     for (i in dataRow) {
+        index = dataRow[i];
+        arrIndex = i;
         tableProduct.row.add([
-            mapProduct.get(dataRow[i].productId).code + " (" + mapProduct.get(dataRow[i].productId).name + ")",
-            mapUnit.get(dataRow[i].unitId).code,
-            dataRow[i].buyPrice,
-            dataRow[i].price,
-            dataRow[i].quantity,
-            (dataRow[i].price * dataRow[i].quantity),
-            '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus" onclick="removeRow(' + i + ');"></button>'
+            getProductInput(index),
+            getText("jumlah", index, "text", "0", "", "jumlahChange"),
+            getText("satuan", index, "text", "-", "disabled", ""),
+            getText("jual", index, "text", "0", "", "jualChange"),
+            getText("beli", index, "text", "0", "", "beliChange"),
+            getText("total", index, "text", "0", "disabled", ""),
+            '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus" onclick="removeRow(\'' + index + ',' + arrIndex + '\');"></button>'
         ]).draw(false);
 
-        total = total + (dataRow[i].price * dataRow[i].quantity);
+        data = mapData.get(index);
+        if (data != undefined) {
+            $("#product-select-" + index).val(data.productCodeName);
+            $("#jumlah-" + index).val(data.jumlah);
+            $("#jual-" + index).val(data.jual);
+            $("#beli-" + index).val(data.beli);
+            $("#satuan-" + index).val(data.satuan);
+            $("#total-" + index).val(data.jual * data.jumlah);
+        }
+
+        var product = document.getElementById("product-select-" + index);
+        var jumlah = document.getElementById("jumlah-" + index);
+        var jual = document.getElementById("jual-" + index);
+        var beli = document.getElementById("beli-" + index);
+
+        product.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+
+                addNewRow();
+            }
+        });
+
+        jumlah.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+
+                addNewRow();
+            }
+        });
+
+        jual.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+
+                addNewRow();
+            }
+        });
+
+        beli.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+
+                addNewRow();
+            }
+        });
     }
+    if (indexnew != undefined) {
+        document.getElementById("product-select-" + indexnew).focus();
+    }
+}
 
+function productChange(index) {
+    productCodeName = $("#product-select-" + index).val();
+    product = mapProductCodeName.get(productCodeName);
 
-    footer = '<tr><td colspan="5"><strong>Total</strong></td><td class="numeric"><strong>' + total + '</strong></td><td></td></tr>';
-    $('#product-data-footer').html(footer);
+    if (product != undefined) {
+        initHarga(product.id, index)
+
+        $("#satuan-" + index).val(product.unitCode);
+
+        setMapData(index);
+    }
+}
+
+function jumlahChange(index) {
+    value = $("#jumlah-" + index).val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    jumlah = parseInt(value.replaceAll('.', ''));
+    jual = parseInt($("#jual-" + index).val());
+    $("#total-" + index).val((jumlah * jual).toLocaleString('id'));
+    $("#jumlah-" + index).val(jumlah.toLocaleString('id'));
+
+    setMapData(index);
+}
+
+function jualChange(index) {
+    value = $("#jual-" + index).val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    jumlah = parseInt($("#jumlah-" + index).val());
+    jual = parseInt(value.replaceAll('.', ''));
+    $("#total-" + index).val((jumlah * jual).toLocaleString('id'));
+    $("#jual-" + index).val(jual.toLocaleString('id'));
+
+    setMapData(index);
+}
+
+function beliChange(index) {
+    value = $("#beli-" + index).val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    beli = parseInt(value.replaceAll('.', ''));
+    $("#beli-" + index).val(beli.toLocaleString('id'));
+
+    setMapData(index);
+
+    
+}
+
+function setMapData(index) {
+    data = mapData.get(index);
+    data.productCodeName = $("#product-select-" + index).val();
+    data.jumlah = $("#jumlah-" + index).val().replaceAll('.', '');
+    data.jual = $("#jual-" + index).val().replaceAll('.', '');
+    data.beli = $("#beli-" + index).val().replaceAll('.', '');
+    data.satuan = $("#satuan-" + index).val();
+
+    mapData.set(index, data);
 }
 
 function submit() {
-
-    if (dataRow.length == 0) {
+    if (dataRow.length <= 0 || mapData.get(dataRow[0]) == undefined || mapData.get(dataRow[0]).productCodeName == "") {
         toastr.warning("Harap tambahkan produk pada transaksi yang akan dibuat");
     } else {
+        detail = [];
+
+        for (i in dataRow) {
+            data = mapData.get(dataRow[i]);
+            product = mapProductCodeName.get(data.productCodeName);
+
+            detail.push(
+                {
+                    "productId": product.id,
+                    "buyPrice": parseInt(data.beli),
+                    "sellPrice": parseInt(data.jual),
+                    "quantity": parseInt(data.jumlah),
+                }
+            )
+        }
+
         transaction = {
             "stakeholderId": $('#customer-select').val(),
             "date": $('#date').val(),
             "transactionType": "SELL",
-            "transactionDetail": dataRow,
+            "transactionDetail": detail,
+            "referenceCode": $('#nopo').val()
         }
 
         $.ajax({
@@ -239,15 +378,12 @@ function submit() {
                     toastr.warning(response.message);
                 } else {
                     toastr.info(response.message);
-                    init();
+                    initData();
                 }
             }
         });
     }
 
-
 }
 
-
 init();
-$('.select2').select2()

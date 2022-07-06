@@ -31,18 +31,39 @@ function init() {
         }
     });
 
+    initUnit();
     initData();
 
     $(function () {
         $("#table-product").DataTable({
-            "paging": false,
+            "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": false,
             "info": false,
             "autoWidth": false,
             "responsive": false,
         });
+    });
+}
+
+function initUnit() {
+    $.ajax({
+        type: "GET",
+        url: "/api/unit/findActive",
+        headers: { "token": token },
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                optionhtml = '';
+                for (i in response.data) {
+                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
+                }
+                $('#unit-modal-select').html(optionhtml);
+            }
+        }
     });
 }
 
@@ -61,8 +82,8 @@ function initData() {
                     mapProduct[response.data[i].id] = response.data[i]            
                     html += '<tr>';
                     html += '<td>' + response.data[i].code + '</td>';
+                    html += '<td>' + response.data[i].unitCode + '</td>';
                     html += '<td>' + response.data[i].name + '</td>';
-                    html += '<td>' + response.data[i].description + '</td>';
                     html += '<td>' + (response.data[i].active ? 'Aktif' : 'Tidak Aktif') + '</td>';
                     html += '<td><button ' + (edit ? '' : 'hidden') + 'type="button" class="btn-tbl btn btn-block btn-primary fas fa-toggle-off " title="Ubah status" data-toggle="modal" data-target="#edit-modal" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button></td>';
                     html += '</tr>';
@@ -78,15 +99,17 @@ function initData() {
 function prepareAdd(){
     clearInput("code");
     clearInput("name");
-    clearInput("description");
 }
 
 function submit(){
     data = {};
     data["code"] = $("#code").val();
     data["name"] = $("#name").val();
+    data["unitId"] = $("#unit-modal-select").val();
     data["description"] = $("#description").val();
     token = getCookie("token")
+
+    console.log(data);
 
     $.ajax({
         type: "POST",

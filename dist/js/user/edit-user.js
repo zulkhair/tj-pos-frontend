@@ -74,6 +74,15 @@ function setSelectedId(id) {
     html += '<option value="false" ' + (!active ? 'selected' : '') + '>Tidak Aktif</option>'
 
     $('#active-modal-select').html(html);
+    $('#name').val(mapUser[id].name);
+    $('#username').val(mapUser[id].username);
+
+    optionhtml = '';
+    for (i in arrRole) {
+        optionhtml = optionhtml + '<option value="' + arrRole[i].id + '"  ' + (arrRole[i].id == mapUser[id].roleId ? 'selected' : '') + '>' + arrRole[i].name + '</option>';
+    }
+
+    $('#role-modal-select').html(optionhtml);
 
     clearInput("password1")
     clearInput("password2")
@@ -82,12 +91,15 @@ function setSelectedId(id) {
 function editStatus() {
     data = {};
     data["userId"] = selectedId;
+    data["name"] = $("#name").val();
+    data["username"] = $("#username").val();
+    data["role"] = $("#role-modal-select").val();
     data["active"] = $("#active-modal-select").val();
     token = getCookie("token")
 
     $.ajax({
         type: "POST",
-        url: "/api/user/change-status",
+        url: "/api/user/edit-user",
         headers: { "token": token },
         data: JSON.stringify(data),
         success: function (response) {

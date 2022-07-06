@@ -66,3 +66,26 @@
 .numeric{
   text-align: right;
 }
+
+.pad0{
+  padding: 0 !important;
+}
+
+.numericpad0{
+  text-align: right;
+  padding: 0 !important;
+}
+
+.numericpad0leftBold{
+  text-align: right;
+  padding: 0 !important;
+  border-left: 3px solid !important;
+}
+
+.bgred{
+  background-color: red;
+}
+
+.bggreen{
+  background-color: green;
+}

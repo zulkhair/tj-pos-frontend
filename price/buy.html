@@ -132,18 +132,6 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
-                                <div class="form-group">
-                                    <label for="supplier" class="col-md-2">Satuan</label>
-                                    <select class="form-control select2 col-md-7" id="unit-modal-select"
-                                        name="unit" placeholder="Satuan" onchange="initData()"></select>
-                                    <button type="button" class="btn btn-primary" title="Tambah Data Satuan" data-toggle="modal" data-target="#add-modal" onclick="prepareAdd()"><span
-                                            class="fas fa-plus"></span></button>
-                                    <button type="button" class="btn btn-primary" title="Hapus Data Satuan" data-toggle="modal" data-target="#edit-modal"><span
-                                            class="fas fa-trash"></span></button>
-                                </div>
-                            </div>
-                            <br/>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <table id="table-product" class="table table-bordered table-striped">
@@ -151,7 +139,7 @@
                                             <tr>
                                                 <th>Kode</th>
                                                 <th>Nama</th>
-                                                <th>Deskripsi</th>
+                                                <th>Satuan</th>
                                                 <th>Harga</th>
                                                 <th style="width: 96px;"></th>
                                             </tr>
@@ -170,61 +158,6 @@
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-
-        <div class="modal fade" id="add-modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Tambah Data Satuan</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Kode</label>
-                            <input type="text" class="form-control" id="unitCode" placeholder="Kode Produk">
-                        </div>
-                        <div class="form-group">
-                            <label>Deskripsi</label>
-                            <input type="text" class="form-control" id="unitDescription" placeholder="Deskripsi Produk">
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"
-                            onclick="submitUnit()">Submit</button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
-
-        <div class="modal fade" id="edit-modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Hapus Data Satuan</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Data harga dengan satuan ini akan ikut terhapus, apakah anda yakin akan melanjutkan?
-                     </div>
-                     <div class="modal-footer justify-content-between">
-                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
-                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                             onclick="editUnit()">Ya</button>
-                     </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
 
         <div class="modal fade" id="submit-modal">
             <div class="modal-dialog">
@@ -269,6 +202,7 @@
                                     <th>Tanggal</th>
                                     <th>Harga</th>
                                     <th>User</th>
+                                    <th>Kode Transaksi</th>
                                 </tr>
                             </thead>
                             <tbody id="history-data-body">

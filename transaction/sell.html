@@ -139,52 +139,27 @@
                                         placeholder="Customer" onchange="changeMasterData()"></select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="nopo" class="col-md-2">No. PO</label>
+                                    <input type="text" class="form-control col-md-7 inline-block" id="nopo"
+                                        name="nopo" placeholder="No. PO" />
+                                </div>
+                                <div class="form-group">
                                     <label for="datetime" class="col-md-2">Tanggal</label>
                                     <input type="date" class="form-control col-md-7 inline-block" id="date"
-                                        name="datetime" placeholder="Tanggal" onchange="changeMasterData()" />
+                                        name="datetime" placeholder="Tanggal" />
                                 </div>
                             </div>
-                            <hr />
-                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
-                                <div class="form-group">
-                                    <label for="product" class="col-md-2">Produk</label>
-                                    <select class="form-control select2 col-md-7" id="product-select" name="product"
-                                        placeholder="Satuan" onchange="initHarga()"></select>
-                                </div>
-                                <div class=" form-group">
-                                    <label for="unit" class="col-md-2">Satuan</label>
-                                    <select class="form-control select2 col-md-7" id="unit-select" name="unit"
-                                        placeholder="Satuan" onchange="initHarga()"></select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="buy-price" class="col-md-2">Harga Beli</label>
-                                    <input type="number" class="form-control col-md-7 inline-block" id="buy-price"
-                                        name="buy-price">
-                                </div>
-                                <div class="form-group">
-                                    <label for="price" class="col-md-2">Harga Jual</label>
-                                    <input type="number" class="form-control col-md-7 inline-block" id="price"
-                                        name="price">
-                                </div>
-                                <div class="form-group">
-                                    <label for="quantity" class="col-md-2">Jumlah</label>
-                                    <input type="number" class="form-control col-md-7 inline-block" id="quantity"
-                                        name="quantity">
-                                    <button type="button" class="btn btn-primary" title="Tambah Data Satuan"
-                                        data-toggle="modal" onclick="addRow()"><span
-                                            class="fas fa-plus"></span></button>
-                                </div>
-                            </div>
+                            <hr/>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <table id="table-product" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Produk</th>
-                                                <th>Satuan</th>
-                                                <th>Harga Beli</th>
-                                                <th>Harga Jual</th>
+                                                <th style="width: 200px;">Produk</th>
                                                 <th>Jumlah</th>
+                                                <th>Satuan</th>
+                                                <th>Harga Jual</th>      
+                                                <th>Harga Beli</th>                                                                                          
                                                 <th>Total</th>
                                                 <th style="width: 20px;"></th>
                                             </tr>

@@ -35,9 +35,9 @@ function init() {
 
     $(function () {
         $("#table-data").DataTable({
-            "paging": false,
+            "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": false,
             "info": false,
             "autoWidth": false,

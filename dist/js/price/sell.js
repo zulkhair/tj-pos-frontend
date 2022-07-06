@@ -3,6 +3,7 @@ var productPriceMap = {};
 var selectedProductId;
 var tableProduct;
 var tableHistory;
+var mapUnit = {};
 
 function init() {
     $.ajax({
@@ -54,6 +55,7 @@ function init() {
         "columns": [
             null,
             { className: "numeric" },
+            null,
             null
         ]
     });
@@ -65,12 +67,11 @@ function init() {
 function initData() {
     tableProduct.clear().draw();
     customerId = $('#supplier-modal-select').val();
-    unitId = $('#unit-modal-select').val();
 
-    if (customerId !== "" && unitId !== "") {
+    if (customerId !== "") {
         $.ajax({
             type: "GET",
-            url: "/api/product/find",
+            url: "/api/product/findActive",
             headers: { "token": token },
             data: {
                 "active": true
@@ -91,8 +92,7 @@ function initData() {
             url: "/api/customer/find-latest-price",
             headers: { "token": token },
             data: {
-                "customerId": customerId,
-                "unitId": unitId,
+                "customerId": customerId
             },
             async: false,
             success: function (response) {
@@ -122,16 +122,16 @@ function initData() {
             tableProduct.row.add([
                 products[i].code,
                 products[i].name,
-                products[i].description,
+                mapUnit[products[i].unitId].code,
                 price,
                 '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products[i].id + '\');"></button><button data-toggle="modal" data-target="#view-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="Edit" onclick="prepareView(\'' + products[i].id + '\');"></button>'
             ]).draw(false);
         }
-
     }
 }
 
 function initUnit() {
+    mapUnit = {};
     $.ajax({
         type: "GET",
         url: "/api/unit/find",
@@ -142,62 +142,9 @@ function initUnit() {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                optionhtml = '';
                 for (i in response.data) {
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
+                    mapUnit[response.data[i].id] = response.data[i];
                 }
-                $('#unit-modal-select').html(optionhtml);
-            }
-        }
-    });
-}
-
-function prepareAdd() {
-    clearInput("unitCode");
-    clearInput("unitDescription");
-}
-
-function submitUnit() {
-    data = {};
-    data["code"] = $("#unitCode").val();
-    data["description"] = $("#unitDescription").val();
-    token = getCookie("token");
-
-    $.ajax({
-        type: "POST",
-        url: "/api/unit/create",
-        headers: { "token": token },
-        data: JSON.stringify(data),
-        async: false,
-        success: function (response) {
-            if (response.status != 0) {
-                toastr.warning(response.message);
-            } else {
-                toastr.info(response.message);
-                initUnit()
-            }
-        }
-    });
-}
-
-function editUnit() {
-    data = {};
-    data["id"] = $("#unit-modal-select").val();
-    data["active"] = false;
-    token = getCookie("token");
-
-    $.ajax({
-        type: "POST",
-        url: "/api/unit/edit",
-        headers: { "token": token },
-        data: JSON.stringify(data),
-        async: false,
-        success: function (response) {
-            if (response.status != 0) {
-                toastr.warning(response.message);
-            } else {
-                toastr.info(response.message);
-                initUnit()
             }
         }
     });
@@ -242,6 +189,7 @@ function submit() {
 function prepareView(productId) {
     customerId = $('#supplier-modal-select').val();
     unitId = $('#unit-modal-select').val();
+    tableHistory.clear();
 
     $.ajax({
         type: "GET",
@@ -259,10 +207,11 @@ function prepareView(productId) {
             } else {
                 var t = $('#table-history-price').DataTable();
                 for (i in response.data) {
-                    t.row.add([
+                    tableHistory.row.add([
                         response.data[i].date,
                         response.data[i].price,
-                        response.data[i].webUserName + ' (' + response.data[i].webUsername + ')'
+                        response.data[i].webUserName + ' (' + response.data[i].webUsername + ')',
+                        response.data[i].transactionCode
                     ]).draw(false);
                 }
             }

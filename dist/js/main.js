@@ -1,3 +1,5 @@
+var token;
+
 function init() {
     token = getCookie("token")
     if (token == "") {
@@ -19,8 +21,19 @@ function init() {
                 for (i in response.data.menu) {
                     menu = response.data.menu[i]
 
-                    menuActive = firstPath == menu.path ? "active" : "";
-                    menuOpen = firstPath == menu.path ? "menu-is-opening menu-open" : "";
+                    menuActive = "";
+                    menuOpen = "";
+                    paths = menu.path.split(";");
+                    
+                    for (i in paths) {
+                        if (menuActive == "") {
+                            menuActive = firstPath == paths[i] ? "active" : "";
+                        }
+                        if (menuOpen == "") {
+                            menuOpen = firstPath == paths[i] ? "menu-is-opening menu-open" : "";
+                        }
+                    }
+
                     menuhtml = menuhtml + '<li class="nav-item ' + menuOpen + '"><a href="#" class="nav-link ' + menuActive + '"><i class="nav-icon fas ' + menu.icon + '"></i><p>' + menu.name + '<i class="right fas fa-angle-left"></i></p></a><ul class="nav nav-treeview">';
 
                     for (j in menu.subMenu) {

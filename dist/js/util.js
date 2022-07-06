@@ -113,3 +113,31 @@ function enableTag(id) {
 function disableTag(id) {
     $('#' + id).attr("disabled", "disabled");
 }
+
+function startDate(){
+    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    var startDate = new Date(y, m, 1);
+    yyyy = startDate.getFullYear();
+    mm = startDate.getMonth() + 1;
+    dd = startDate.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    startDate = yyyy + '-' + mm + '-' + dd;
+    return startDate;
+}
+
+function endDate(){
+    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    var lastDate = new Date(y, m + 1, 0);
+    yyyy = lastDate.getFullYear();
+    mm = lastDate.getMonth() + 1;
+    dd = lastDate.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    lastDate = yyyy + '-' + mm + '-' + dd;
+    return lastDate;
+}
