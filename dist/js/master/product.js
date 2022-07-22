@@ -109,8 +109,6 @@ function submit(){
     data["description"] = $("#description").val();
     token = getCookie("token")
 
-    console.log(data);
-
     $.ajax({
         type: "POST",
         url: "/api/product/create",
