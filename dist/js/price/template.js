@@ -81,7 +81,7 @@ function initData(){
     });
 }
 
-function submit(){
+function submitAdd(){
     data = {};
     data["name"] = $("#name").val();
     token = getCookie("token")
