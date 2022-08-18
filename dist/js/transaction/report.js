@@ -17,6 +17,7 @@ function init() {
             { className: "pad0" },
             { className: "pad0" },
             { className: "pad0" },
+            { className: "pad0" },
             { className: "numericpad0" },
             { className: "numericpad0" },
             { className: "numericpad0" },
