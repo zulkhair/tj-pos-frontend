@@ -22,7 +22,8 @@ function init() {
             null,
             { className: "numeric" },
             null
-        ]
+        ],
+        "lengthMenu": [ 5, 10, 25, 50, 75, 100 ]
     });
 
     tableHistory = $("#table-history-price").DataTable({
@@ -43,10 +44,34 @@ function init() {
 
     initUnit();
     initData();
+
+    var harga = document.getElementById("price");
+    harga.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            submit();
+            $('#submit-modal').modal('toggle');
+        }
+    });
+
+    $('#submit-modal').on('shown.bs.modal', function () {
+        $(this).find('#price').focus();
+    })  
+}
+
+function hargaChange() {
+    value = $("#price").val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#price").val(harga.toLocaleString('id'));
 }
 
 function initData() {
-    tableProduct.clear().draw();
+    tableProduct.clear();
 
     $.ajax({
         type: "GET",
@@ -90,7 +115,10 @@ function initData() {
 
         product = {
             "id": products[i].id,
-            "price": price,
+            "code": products[i].code,
+            "name": products[i].name,
+            "unit": products[i].unitId,
+            "price": price.toLocaleString('id'),
         }
 
         productPriceMap[products[i].id] = product
@@ -99,7 +127,7 @@ function initData() {
             products[i].code,
             products[i].name,
             mapUnit[products[i].unitId].code,
-            price,
+            price.toLocaleString('id'),
             '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products[i].id + '\');"></button><button data-toggle="modal" data-target="#view-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="Edit" onclick="prepareView(\'' + products[i].id + '\');"></button>'
         ]).draw(false);
     }
@@ -132,8 +160,8 @@ function prepareAdd() {
 
 function submitUnit() {
     data = {};
-    data["code"] = $("#unitCode").val();
-    data["description"] = $("#unitDescription").val();
+    data["code"] = $("#unitCode").val().trim();
+    data["description"] = $("#unitDescription").val().trim();
     token = getCookie("token");
 
     $.ajax({
@@ -178,13 +206,17 @@ function editUnit() {
 
 function prepareSubmit(productId) {
     selectedProductId = productId
+    $("#code-sub").val(productPriceMap[productId].code);
+    $("#name-sub").val(productPriceMap[productId].name);
+    $("#unit-sub").val(productPriceMap[productId].unit);
     $("#price").val(productPriceMap[productId].price);
+    document.getElementById("price").focus();
 }
 
 function submit() {
     customerId = $('#supplier-modal-select').val();
     unitId = $('#unit-modal-select').val();
-    price = $("#price").val();
+    price = parseInt($("#price").val().replaceAll('.', ''));
     productId = selectedProductId;
 
     data = {
@@ -216,6 +248,10 @@ function prepareView(productId) {
     unitId = $('#unit-modal-select').val();
     tableHistory.clear();
 
+    $("#code-sub2").val(productPriceMap[productId].code);
+    $("#name-sub2").val(productPriceMap[productId].name);
+    $("#unit-sub2").val(productPriceMap[productId].unit);
+
     $.ajax({
         type: "GET",
         url: "/api/supplier/find-price",
@@ -232,7 +268,7 @@ function prepareView(productId) {
                 for (i in response.data) {
                     tableHistory.row.add([
                         response.data[i].date,
-                        response.data[i].price,
+                        response.data[i].price.toLocaleString('id'),
                         response.data[i].webUserName + ' (' + response.data[i].webUsername + ')',
                         response.data[i].transactionCode
                     ]).draw(false);

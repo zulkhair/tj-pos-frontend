@@ -83,9 +83,9 @@ function prepareAdd(){
 
 function submit(){
     data = {};
-    data["code"] = $("#code").val();
-    data["name"] = $("#name").val();
-    data["description"] = $("#description").val();
+    data["code"] = $("#code").val().trim();
+    data["name"] = $("#name").val().trim();
+    data["description"] = $("#description").val().trim();
     token = getCookie("token")
 
     $.ajax({
@@ -122,9 +122,9 @@ function prepareEdit(id){
 function editData(){
     data = {};
     data["id"] = selectedId;
-    data["code"] =  $("#code-edit").val();
-    data["name"] =  $("#name-edit").val();
-    data["description"] =  $("#description-edit").val();
+    data["code"] =  $("#code-edit").val().trim();
+    data["name"] =  $("#name-edit").val().trim();
+    data["description"] =  $("#description-edit").val().trim();
     data["active"] = $("#active-modal-select").val();
     token = getCookie("token")
 

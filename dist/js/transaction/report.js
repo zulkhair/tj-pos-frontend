@@ -66,6 +66,7 @@ function reloadTable() {
     mapTrx = new Map();
 
     customerId = $('#customer-select').val();
+    stats = $('#status-select').val();
 
     $.ajax({
         type: "GET",
@@ -75,7 +76,7 @@ function reloadTable() {
             "txType": "SELL",
             "startDate": $('#startDate').val(),
             "endDate": $('#endDate').val(),
-            "status": "DIBAYAR",
+            "status": stats,
             "stakeholderId": customerId
         },
         async: false,
@@ -102,10 +103,12 @@ function reloadTable() {
                     for (j in details) {
                         code = '';
                         nopo = '';
+                        stats = '';
                         stylerow = '';
                         if (first) {
                             code = response.data[i].code;
                             nopo = response.data[i].referenceCode;
+                            stats = response.data[i].status;
                             // stylerow = 'background-color: rgba(0,0,0,.05);'
                             first = false;
                         }
@@ -133,6 +136,7 @@ function reloadTable() {
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + date + '</p>',
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + code + '</p>',
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + nopo + '</p>',
+                            '<p style="' + stylerow + 'padding:12px;margin:0">' + stats + '</p>',
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + details[j].productCode + '</p>',
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyQuantity).toLocaleString('id') + '</p>',
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p>',
@@ -162,6 +166,7 @@ function reloadTable() {
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                             '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalBuySection).toLocaleString('id') + '</p>',
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
@@ -171,6 +176,7 @@ function reloadTable() {
 
                         tableTrx.row.add([
                             '<p style="padding:0;margin:0">&nbsp;</p>',
+                            '',
                             '',
                             '',
                             '',

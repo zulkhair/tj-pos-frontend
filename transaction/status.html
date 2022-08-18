@@ -135,27 +135,27 @@
                             <div id="first">
                                 <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
                                     <div class="form-group">
-                                        <label for="txCode" class="col-md-2">No Faktur</label>
+                                        <label for="txCode" class="col-md-3">No Faktur</label>
                                         <input type="text" class="form-control col-md-7 inline-block" id="txCode"
                                             name="txCode" onkeyup="reloadTable()">
                                     </div>
                                     <div class="form-group">
-                                        <label for="datetime" class="col-md-2">Tanggal Awal</label>
+                                        <label for="datetime" class="col-md-3">Tanggal Awal</label>
                                         <input type="date" class="form-control col-md-7 inline-block" id="startDate"
                                             name="datetime" placeholder="Tanggal" onchange="reloadTable()" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="datetime" class="col-md-2">Tanggal Akhir</label>
+                                        <label for="datetime" class="col-md-3">Tanggal Akhir</label>
                                         <input type="date" class="form-control col-md-7 inline-block" id="endDate"
                                             name="datetime" placeholder="Tanggal" onchange="reloadTable()" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="customer" class="col-md-2">Customer</label>
+                                        <label for="customer" class="col-md-3">Customer</label>
                                         <select class="form-control select2 col-md-7" id="customer-select"
                                             name="customer" placeholder="Customer" onchange="reloadTable()"></select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="status" class="col-md-2">Status</label>
+                                        <label for="status" class="col-md-3">Status</label>
                                         <select class="form-control select2 col-md-7" id="status-select" name="status"
                                             placeholder="Status" onchange="reloadTable()">
                                             <option value="">-</option>
@@ -170,12 +170,13 @@
                                         <table id="table-trx" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
+                                                    <th>No</th>
                                                     <th>No Faktur</th>
                                                     <th>Tanggal</th>
                                                     <th>Customer</th>
                                                     <th>Total Transaksi</th>
                                                     <th>Status</th>
-                                                    <th style="width: 20px;"></th>
+                                                    <th style="width: 96px;"></th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -186,22 +187,22 @@
                         <div id="second">
                             <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
                                 <div class="form-group">
-                                    <label for="txCodesec" class="col-md-2">No Faktur</label>
+                                    <label for="txCodesec" class="col-md-3">No Faktur</label>
                                     <input disabled type="text" class="form-control col-md-7 inline-block"
                                         id="txCodesec" name="txCodesec">
                                 </div>
                                 <div class="form-group">
-                                    <label for="startDatesec" class="col-md-2">Tanggal Awal</label>
-                                    <input disabled type="date" class="form-control col-md-7 inline-block"
+                                    <label for="startDatesec" class="col-md-3">Tanggal Awal</label>
+                                    <input disabled type="text" class="form-control col-md-7 inline-block"
                                         id="startDatesec" name="startDatesec" placeholder="Tanggal" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="customersec" class="col-md-2">Customer</label>
+                                    <label for="customersec" class="col-md-3">Customer</label>
                                     <input disabled type="text" class="form-control col-md-7 inline-block"
                                         id="customersec" name="customersec">
                                 </div>
                                 <div class="form-group">
-                                    <label for="statussec" class="col-md-2">Status</label>
+                                    <label for="statussec" class="col-md-3">Status</label>
                                     <input disabled type="text" class="form-control col-md-7 inline-block"
                                         id="statussec" name="statussec">
                                 </div>
@@ -215,7 +216,7 @@
                                 </div>
                             </div>
                             <div id="save-sec">
-                                <div class="col-md-2 offset-md-10">
+                                <div class="col-md-3 offset-md-9">
                                     <button type="button"
                                         class="btn btn-primary col-md-5 offset-md-1" title="Simpan"
                                         id="btn-save" >Simpan</button>
@@ -229,6 +230,7 @@
                                     <table id="table-detail" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th>Produk</th>
                                                 <th>Satuan</th>
                                                 <th>Jumlah Beli</th>
@@ -244,6 +246,7 @@
                                     <table id="table-edit" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th>Produk</th>
                                                 <th>Satuan</th>
                                                 <th>Jumlah Beli</th>
@@ -289,6 +292,30 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal"
                         onclick="updateStatus()">Ya</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div class="modal fade" id="remove-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Hapus Faktur</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Apakah anda yakin untuk menghapus faktur ini?
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        onclick="deleteFaktur()">Ya</button>
                 </div>
             </div>
             <!-- /.modal-content -->

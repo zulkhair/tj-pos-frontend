@@ -170,8 +170,20 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
+                            <label>Kode</label>
+                            <input type="text" class="form-control" id="code-sub" placeholder="Kode" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input type="text" class="form-control" id="name-sub" placeholder="Nama" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Satuan</label>
+                            <input type="text" class="form-control" id="unit-sub " placeholder="Satuan" disabled>
+                        </div>
+                        <div class="form-group">
                             <label>Harga</label>
-                            <input type="number" class="form-control" id="price" placeholder="Harga">
+                            <input type="text" class="form-control" id="price" placeholder="Harga" onkeyup="hargaChange()">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -197,6 +209,18 @@
                     </div>
                     <div class="modal-body">
                         <table id="table-history-price" class="table table-bordered table-striped">
+                            <div class="form-group">
+                                <label>Kode</label>
+                                <input type="text" class="form-control" id="code-sub2" placeholder="Kode" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Nama</label>
+                                <input type="text" class="form-control" id="name-sub2" placeholder="Nama" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Satuan</label>
+                                <input type="text" class="form-control" id="unit-sub2" placeholder="Satuan" disabled>
+                            </div>
                             <thead>
                                 <tr>
                                     <th>Tanggal</th>

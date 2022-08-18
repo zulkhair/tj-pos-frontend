@@ -16,6 +16,7 @@ function init() {
             { className: "" },
             { className: "" },
             { className: "" },
+            { className: "" },
             { className: "numeric" },
             { className: "" },
             { className: "" },
@@ -31,6 +32,7 @@ function init() {
         "autoWidth": false,
         "responsive": false,
         "columns": [
+            { className: "" },
             { className: "" },
             { className: "" },
             { className: "numeric" },
@@ -98,17 +100,21 @@ function reloadTable() {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
+                count = 1;
                 for (i in response.data) {
                     mapTrx.set(response.data[i].id, response.data[i])
                     disable = response.data[i].status == 'DIBAYAR' ? 'disabled' : '';
+                    btnDis = response.data[i].status == 'PEMBUATAN' ? '' : 'hidden disabled';
                     tableTrx.row.add([
+                        count,
                         response.data[i].code,
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
                         response.data[i].total.toLocaleString('id'),
                         response.data[i].status,
-                        '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="View Detail" onclick="viewdetail(\'' + response.data[i].id + '\');"></button>'
+                        '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="View Detail" onclick="viewdetail(\'' + response.data[i].id + '\');"></button><button '+btnDis+' type="button" data-toggle="modal" data-target="#remove-modal" class="btn-tbl btn btn-block btn-primary fas fa-circle-minus " title="Hapus Faktur" onclick="prepareDelete(\'' + response.data[i].id + '\');"></button>'
                     ]).draw(false);
+                    count++;                    
                 }
             }
         }
@@ -124,21 +130,23 @@ function viewdetail(trxId) {
 
     buttonEdit = ''
 
+    count = 1;
     for (i in dataRow) {
         if (data.status != 'DIBAYAR') {
             buttonEdit = '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + dataRow[i].productCode + '\');"></button>';
         }
         tableDetail.row.add([
+            count,
             dataRow[i].productCode + " (" + dataRow[i].productName + ")",
             dataRow[i].unitCode,
             dataRow[i].buyQuantity,
-            dataRow[i].buyPrice,
+            dataRow[i].buyPrice.toLocaleString('id'),
             dataRow[i].quantity,
-            dataRow[i].sellPrice,
-            (dataRow[i].sellPrice * dataRow[i].quantity),
+            dataRow[i].sellPrice.toLocaleString('id'),
+            (dataRow[i].sellPrice * dataRow[i].quantity).toLocaleString('id'),
             '<button data-toggle="modal" data-target="#view-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="Edit" onclick="prepareView(\'' + dataRow[i].productCode + '\');"></button>'
         ]).draw(false);
-
+        count++;
         total = total + (dataRow[i].sellPrice * dataRow[i].quantity);
     }
 
@@ -159,6 +167,14 @@ function back() {
 
 function prepareUpdateStatus(txId) {
     selectedTrxId = txId;
+}
+
+function prepareDelete(txId){
+    selectedTrxId = txId;
+}
+
+function deleteFaktur(){
+    toastr.warning("Fitur masih dalam pengembangan");
 }
 
 function updateStatus() {

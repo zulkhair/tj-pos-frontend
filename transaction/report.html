@@ -134,19 +134,29 @@
                         <div class="card-body">
                             <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">                           
                                 <div class="form-group">
-                                    <label for="datetime" class="col-md-2">Tanggal Awal</label>
+                                    <label for="datetime" class="col-md-3">Tanggal Awal</label>
                                     <input type="date" class="form-control col-md-7 inline-block" id="startDate"
                                         name="datetime" placeholder="Tanggal" onchange="reloadTable()" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="datetime" class="col-md-2">Tanggal Akhir</label>
+                                    <label for="datetime" class="col-md-3">Tanggal Akhir</label>
                                     <input type="date" class="form-control col-md-7 inline-block" id="endDate"
                                         name="datetime" placeholder="Tanggal" onchange="reloadTable()" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="customer" class="col-md-2">Customer</label>
+                                    <label for="customer" class="col-md-3">Customer</label>
                                     <select class="form-control select2 col-md-7" id="customer-select" name="customer"
                                         placeholder="Customer" onchange="reloadTable()"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="customer" class="col-md-3">Status</label>
+                                    <select class="form-control select2 col-md-7" id="status-select" name="customer"
+                                        placeholder="Status" onchange="reloadTable()">
+                                        <option value="">-Pilih Status-</option>
+                                        <option value="PEMBUATAN">PEMBUATAN</option>
+                                        <option value="KONTRABON">KONTRABON</option>
+                                        <option value="DIBAYAR">DIBAYAR</option>
+                                    </select>
                                 </div>
                             </div>                           
                             <div class="col-md-12">
@@ -156,7 +166,8 @@
                                             <tr>
                                                 <th><p style="margin:0;padding:12px;">Tanggal</p></th>
                                                 <th><p style="margin:0;padding:12px;">No Faktur</p></th>
-                                                <th><p style="margin:0;padding:12px;">No PO</p></th>                                                
+                                                <th><p style="margin:0;padding:12px;">No PO</p></th>     
+                                                <th><p style="margin:0;padding:12px;">Status</p></th>                                                
                                                 <th><p style="margin:0;padding:12px;">Produk</p></th>
                                                 <th><p style="margin:0;padding:12px;">Jumlah Beli</p></th>
                                                 <th><p style="margin:0;padding:12px;">Harga Beli</p></th>

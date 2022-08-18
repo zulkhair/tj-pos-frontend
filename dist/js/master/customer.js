@@ -1,6 +1,7 @@
 var edit = false;
 var mapData = {};
 var selectedId = ''
+var tableCustomer;
 
 function init() {
     $.ajax({
@@ -31,9 +32,7 @@ function init() {
         }
     });
 
-    initData();
-
-    $(function () {
+    tableCustomer =
         $("#table-data").DataTable({
             "paging": true,
             "lengthChange": false,
@@ -43,10 +42,14 @@ function init() {
             "autoWidth": false,
             "responsive": false,
         });
-    });
+
+    initData();
+
+
 }
 
 function initData() {
+    tableCustomer.clear();
     $.ajax({
         type: "GET",
         url: "/api/customer/find",
@@ -57,35 +60,33 @@ function initData() {
                 toastr.warning(response.message);
             } else {
                 html = '';
-                for (i in response.data) {       
-                    mapData[response.data[i].id] = response.data[i]            
-                    html += '<tr>';
-                    html += '<td>' + response.data[i].code + '</td>';
-                    html += '<td>' + response.data[i].name + '</td>';
-                    html += '<td>' + response.data[i].description + '</td>';
-                    html += '<td>' + (response.data[i].active ? 'Aktif' : 'Tidak Aktif') + '</td>';
-                    html += '<td><button ' + (edit ? '' : 'hidden') + 'type="button" class="btn-tbl btn btn-block btn-primary fas fa-toggle-off " title="Ubah status" data-toggle="modal" data-target="#edit-modal" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button></td>';
-                    html += '</tr>';
+                for (i in response.data) {
+                    mapData[response.data[i].id] = response.data[i]
+                    tableCustomer.row.add([
+                        response.data[i].code,
+                        response.data[i].name,
+                        response.data[i].description,
+                        (response.data[i].active ? 'Aktif' : 'Tidak Aktif'),
+                        '<button ' + (edit ? '' : 'hidden') + 'type="button" class="btn-tbl btn btn-block btn-primary fas fa-toggle-off " title="Ubah status" data-toggle="modal" data-target="#edit-modal" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>',
+                    ]).draw(false);
                 }
-
-                $('#data-body').html(html);
             }
         }
     });
 
 }
 
-function prepareAdd(){
+function prepareAdd() {
     clearInput("code");
     clearInput("name");
     clearInput("description");
 }
 
-function submit(){
+function submit() {
     data = {};
-    data["code"] = $("#code").val();
-    data["name"] = $("#name").val();
-    data["description"] = $("#description").val();
+    data["code"] = $("#code").val().trim();
+    data["name"] = $("#name").val().trim();
+    data["description"] = $("#description").val().trim();
     token = getCookie("token")
 
     $.ajax({
@@ -105,7 +106,7 @@ function submit(){
     });
 }
 
-function prepareEdit(id){
+function prepareEdit(id) {
     selectedId = id;
 
     $("#code-edit").val(mapData[id].code);
@@ -119,12 +120,12 @@ function prepareEdit(id){
     $('#active-modal-select').html(html);
 }
 
-function editData(){
+function editData() {
     data = {};
     data["id"] = selectedId;
-    data["code"] =  $("#code-edit").val();
-    data["name"] =  $("#name-edit").val();
-    data["description"] =  $("#description-edit").val();
+    data["code"] = $("#code-edit").val().trim();
+    data["name"] = $("#name-edit").val().trim();
+    data["description"] = $("#description-edit").val().trim();
     data["active"] = $("#active-modal-select").val();
     token = getCookie("token")
 

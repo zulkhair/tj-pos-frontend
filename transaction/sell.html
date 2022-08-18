@@ -134,17 +134,17 @@
                         <div class="card-body">
                             <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
                                 <div class="form-group">
-                                    <label for="customer" class="col-md-2">Customer</label>
+                                    <label for="customer" class="col-md-3">Customer</label>
                                     <select class="form-control select2 col-md-7" id="customer-select" name="customer"
                                         placeholder="Customer" onchange="changeMasterData()"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nopo" class="col-md-2">No. PO</label>
+                                    <label for="nopo" class="col-md-3">No. PO</label>
                                     <input type="text" class="form-control col-md-7 inline-block" id="nopo"
                                         name="nopo" placeholder="No. PO" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="datetime" class="col-md-2">Tanggal</label>
+                                    <label for="datetime" class="col-md-3">Tanggal</label>
                                     <input type="date" class="form-control col-md-7 inline-block" id="date"
                                         name="datetime" placeholder="Tanggal" />
                                 </div>
@@ -155,6 +155,7 @@
                                     <table id="table-product" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
+                                                <th>No</th>
                                                 <th style="width: 200px;">Produk</th>
                                                 <th>Jumlah</th>
                                                 <th>Satuan</th>
@@ -165,7 +166,13 @@
                                             </tr>
                                         </thead>
                                         <tbody id="product-data-body"></tbody>
-                                        <tfoot id="product-data-footer"></tfoot>
+                                        <tfoot id="product-data-footer">
+                                            <tr>
+                                                <td colspan="5" style="text-align: right;">Total Penjualan</td>
+                                                <td style="text-align: right;"><input class="form-control" disabled placeholder="0" id="total-all"/></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

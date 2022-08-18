@@ -113,7 +113,7 @@ function initHarga(productId, index) {
                     toastr.warning(response.message);
                 } else {
                     if (response.data) {
-                        $("#jual-" + index).val(response.data[0].price);
+                        $("#jual-" + index).val(response.data[0].price.toLocaleString('id'));
                     } else {
                         $("#jual-" + index).val(0);
                     }
@@ -135,7 +135,7 @@ function initHarga(productId, index) {
                     toastr.warning(response.message);
                 } else {
                     if (response.data) {
-                        $("#beli-" + index).val(response.data[0].price);
+                        $("#beli-" + index).val(response.data[0].price.toLocaleString('id'));
                     } else {
                         $("#beli-" + index).val(0);
                     }
@@ -206,12 +206,14 @@ function addNewRow() {
 
 function reloadTable(indexnew) {
     tableProduct.clear();
+    count = 1;
     for (i in dataRow) {
         index = dataRow[i];
         arrIndex = i;
         tableProduct.row.add([
+            count,
             getProductInput(index),
-            getText("jumlah", index, "text", "0", "", "jumlahChange"),
+            getText("jumlah", index, "number", "0", "", "jumlahChange"),
             getText("satuan", index, "text", "-", "disabled", ""),
             getText("jual", index, "text", "0", "", "jualChange"),
             getText("beli", index, "text", "0", "", "beliChange"),
@@ -223,11 +225,13 @@ function reloadTable(indexnew) {
         if (data != undefined) {
             $("#product-select-" + index).val(data.productCodeName);
             $("#jumlah-" + index).val(data.jumlah);
-            $("#jual-" + index).val(data.jual);
-            $("#beli-" + index).val(data.beli);
+            $("#jual-" + index).val(parseInt(data.jual).toLocaleString('id'));
+            $("#beli-" + index).val(parseInt(data.beli).toLocaleString('id'));
             $("#satuan-" + index).val(data.satuan);
-            $("#total-" + index).val(data.jual * data.jumlah);
+            $("#total-" + index).val((data.jual * data.jumlah).toLocaleString('id'));
         }
+
+        count++;
 
         var product = document.getElementById("product-select-" + index);
         var jumlah = document.getElementById("jumlah-" + index);
@@ -285,7 +289,8 @@ function productChange(index) {
         $("#satuan-" + index).val(product.unitCode);
 
         setMapData(index);
-    }
+        document.getElementById("jumlah-" + index).focus();
+    }    
 }
 
 function jumlahChange(index) {
@@ -293,12 +298,12 @@ function jumlahChange(index) {
     if (value == "" || value == undefined){
         value = "0"
     }
-    jumlah = parseInt(value.replaceAll('.', ''));
-    jual = parseInt($("#jual-" + index).val());
+    jumlah = parseFloat(value);
+    jual = parseInt($("#jual-" + index).val().replaceAll('.', ''));
     $("#total-" + index).val((jumlah * jual).toLocaleString('id'));
-    $("#jumlah-" + index).val(jumlah.toLocaleString('id'));
 
     setMapData(index);
+    sumTotal();
 }
 
 function jualChange(index) {
@@ -306,12 +311,13 @@ function jualChange(index) {
     if (value == "" || value == undefined){
         value = "0"
     }
-    jumlah = parseInt($("#jumlah-" + index).val());
+    jumlah = parseFloat($("#jumlah-" + index).val());
     jual = parseInt(value.replaceAll('.', ''));
     $("#total-" + index).val((jumlah * jual).toLocaleString('id'));
     $("#jual-" + index).val(jual.toLocaleString('id'));
 
     setMapData(index);
+    sumTotal();
 }
 
 function beliChange(index) {
@@ -330,12 +336,13 @@ function beliChange(index) {
 function setMapData(index) {
     data = mapData.get(index);
     data.productCodeName = $("#product-select-" + index).val();
-    data.jumlah = $("#jumlah-" + index).val().replaceAll('.', '');
+    data.jumlah = $("#jumlah-" + index).val();
     data.jual = $("#jual-" + index).val().replaceAll('.', '');
     data.beli = $("#beli-" + index).val().replaceAll('.', '');
     data.satuan = $("#satuan-" + index).val();
 
     mapData.set(index, data);
+
 }
 
 function submit() {
@@ -347,13 +354,13 @@ function submit() {
         for (i in dataRow) {
             data = mapData.get(dataRow[i]);
             product = mapProductCodeName.get(data.productCodeName);
-
+            console.log(data);
             detail.push(
                 {
                     "productId": product.id,
                     "buyPrice": parseInt(data.beli),
                     "sellPrice": parseInt(data.jual),
-                    "quantity": parseInt(data.jumlah),
+                    "quantity": parseFloat(data.jumlah),
                 }
             )
         }
@@ -384,6 +391,15 @@ function submit() {
         });
     }
 
+}
+
+function sumTotal(){
+    total = 0;
+    for (i in dataRow) {
+        data = mapData.get(dataRow[i]);
+        total = total + (parseFloat(data.jumlah) * parseInt(data.jual));
+    }
+    $("#total-all").val(total.toLocaleString('id'));
 }
 
 init();

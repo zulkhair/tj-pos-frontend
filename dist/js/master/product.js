@@ -1,6 +1,7 @@
 var edit = false;
 var mapProduct = {};
 var selectedId = ''
+var tableProduct;
 
 function init() {
     $.ajax({
@@ -31,20 +32,20 @@ function init() {
         }
     });
 
+    tableProduct = $("#table-product").DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": false,
+        "info": false,
+        "autoWidth": false,
+        "responsive": false,
+    });
+
     initUnit();
     initData();
 
-    $(function () {
-        $("#table-product").DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": false,
-            "info": false,
-            "autoWidth": false,
-            "responsive": false,
-        });
-    });
+   
 }
 
 function initUnit() {
@@ -68,6 +69,7 @@ function initUnit() {
 }
 
 function initData() {
+    tableProduct.clear();
     $.ajax({
         type: "GET",
         url: "/api/product/find",
@@ -78,35 +80,34 @@ function initData() {
                 toastr.warning(response.message);
             } else {
                 html = '';
-                for (i in response.data) {       
-                    mapProduct[response.data[i].id] = response.data[i]            
-                    html += '<tr>';
-                    html += '<td>' + response.data[i].code + '</td>';
-                    html += '<td>' + response.data[i].unitCode + '</td>';
-                    html += '<td>' + response.data[i].name + '</td>';
-                    html += '<td>' + (response.data[i].active ? 'Aktif' : 'Tidak Aktif') + '</td>';
-                    html += '<td><button ' + (edit ? '' : 'hidden') + 'type="button" class="btn-tbl btn btn-block btn-primary fas fa-toggle-off " title="Ubah status" data-toggle="modal" data-target="#edit-modal" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button></td>';
-                    html += '</tr>';
+                for (i in response.data) {
+                    mapProduct[response.data[i].id] = response.data[i]
+                    tableProduct.row.add([
+                        response.data[i].code,
+                        response.data[i].unitCode,
+                        response.data[i].name,
+                        (response.data[i].active ? 'Aktif' : 'Tidak Aktif'),
+                        '<button ' + (edit ? '' : 'hidden') + 'type="button" class="btn-tbl btn btn-block btn-primary fas fa-toggle-off " title="Ubah status" data-toggle="modal" data-target="#edit-modal" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
+                    ]).draw(false);
                 }
 
-                $('#product-data-body').html(html);
             }
         }
     });
 
 }
 
-function prepareAdd(){
+function prepareAdd() {
     clearInput("code");
     clearInput("name");
 }
 
-function submit(){
+function submit() {
     data = {};
-    data["code"] = $("#code").val();
-    data["name"] = $("#name").val();
+    data["code"] = $("#code").val().trim();
+    data["name"] = $("#name").val().trim();
     data["unitId"] = $("#unit-modal-select").val();
-    data["description"] = $("#description").val();
+    data["description"] = $("#description").val().trim();
     token = getCookie("token")
 
     $.ajax({
@@ -126,7 +127,7 @@ function submit(){
     });
 }
 
-function prepareEdit(id){
+function prepareEdit(id) {
     selectedId = id;
 
     $("#code-edit").val(mapProduct[id].code);
@@ -140,12 +141,12 @@ function prepareEdit(id){
     $('#active-modal-select').html(html);
 }
 
-function editProduct(){
+function editProduct() {
     data = {};
     data["id"] = selectedId;
-    data["code"] =  $("#code-edit").val();
-    data["name"] =  $("#name-edit").val();
-    data["description"] =  $("#description-edit").val();
+    data["code"] = $("#code-edit").val().trim();
+    data["name"] = $("#name-edit").val().trim();
+    data["description"] = $("#description-edit").val().trim();
     data["active"] = $("#active-modal-select").val();
     token = getCookie("token")
 
