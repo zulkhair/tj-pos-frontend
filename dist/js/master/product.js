@@ -107,7 +107,7 @@ function submit() {
     data["code"] = $("#code").val().trim();
     data["name"] = $("#name").val().trim();
     data["unitId"] = $("#unit-modal-select").val();
-    data["description"] = $("#description").val().trim();
+    data["description"] = $("#description").val();
     token = getCookie("token")
 
     $.ajax({
