@@ -174,7 +174,26 @@ function prepareDelete(txId){
 }
 
 function deleteFaktur(){
-    toastr.warning("Fitur masih dalam pengembangan");
+    request = {
+        "transactionId": selectedTrxId
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "/api/transaction/cancelTrx",
+        headers: { "token": token },
+        data: JSON.stringify(request),
+        contentType: 'application/json',
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                toastr.info(response.message);
+                initData();
+            }
+        }
+    });
 }
 
 function updateStatus() {
