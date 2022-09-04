@@ -46,6 +46,7 @@ function initData() {
     initCustomer();
     initProduct();
     addNewRow();
+    $("#total-all").val(0);
 }
 
 function initCustomer() {

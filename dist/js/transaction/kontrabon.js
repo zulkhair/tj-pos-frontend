@@ -7,6 +7,8 @@ var mapSelectedEdit = new Map();
 var selectedKontrabonId;
 var mapKontrabon = new Map();
 var mapCustomer = new Map();
+var arrData = [];
+var arrDataEdit = [];
 
 function init() {
     tableKontrabon = $("#table-kontrabon").DataTable({
@@ -125,7 +127,7 @@ function initKontrabon() {
                         response.data[i].code,
                         response.data[i].createdTime,
                         response.data[i].status == "CREATED" ? "BELUM DIBAYAR" : "LUNAS",
-                        response.data[i].total,
+                        response.data[i].total.toLocaleString('id'),
                         response.data[i].status == "CREATED" ? button : ""
                     ]).draw(false);
                 }
@@ -137,6 +139,7 @@ function initKontrabon() {
 function initTrx() {
     tableTrx.clear().draw();
     mapSelected = new Map();
+    arrData = [];
 
     $.ajax({
         type: "GET",
@@ -155,11 +158,12 @@ function initTrx() {
                 toastr.warning(response.message);
             } else {
                 for (i in response.data) {
+                    arrData.push(response.data[i]);
                     tableTrx.row.add([
                         response.data[i].code,
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
-                        response.data[i].total,
+                        response.data[i].total.toLocaleString('id'),
                         '<input type="checkbox" id="checkbox' + i + '">'
                     ]).draw(false);
 
@@ -171,6 +175,8 @@ function initTrx() {
 }
 
 function initTrxEdit() {
+    arrData = [];
+    arrDataEdit = [];
     kontrabon = mapKontrabon.get(selectedKontrabonId);
     customer = mapCustomer.get(kontrabon.customerId);
     $('#kontrabon-code').val(kontrabon.code);
@@ -201,11 +207,12 @@ function initTrxEdit() {
                 toastr.warning(response.message);
             } else {
                 for (i in response.data) {
-                    tableTrxEdit1.row.add([
+                    arrData.push(response.data[i]);
+                    tableTrxEdit1.row.add([                        
                         response.data[i].code,
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
-                        response.data[i].total,
+                        response.data[i].total.toLocaleString('id'),
                         '<input type="checkbox" id="checkbox1' + i + '">'
                     ]).draw(false);
 
@@ -228,11 +235,12 @@ function initTrxEdit() {
                 toastr.warning(response.message);
             } else {
                 for (i in response.data) {
+                    arrDataEdit.push(response.data[i]);
                     tableTrxEdit.row.add([
                         response.data[i].code,
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
-                        response.data[i].total,
+                        response.data[i].total.toLocaleString('id'),
                         '<input type="checkbox" id="checkboxedit' + i + '">'
                     ]).draw(false);
 
@@ -408,6 +416,27 @@ function prepareEdit(id) {
     selectedKontrabonId = id;
     edit();
     initTrxEdit();
+}
+
+function selectAll(){
+    for (i in arrData) {
+        mapSelected.set(arrData[i].id, arrData[i]);
+        $( "#checkbox"+i ).prop( "checked", true );
+    }    
+}
+
+function selectAll2(){
+    for (i in arrData) {
+        mapSelected.set(arrData[i].id, arrData[i]);
+        $( "#checkbox1"+i ).prop( "checked", true );
+    }    
+}
+
+function selectAll3(){
+    for (i in arrDataEdit) {
+        mapSelectedEdit.set(arrDataEdit[i].id, arrDataEdit[i]);
+        $( "#checkboxedit"+i ).prop( "checked", true );
+    }    
 }
 
 init();
