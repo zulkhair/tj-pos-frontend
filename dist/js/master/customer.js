@@ -2,6 +2,7 @@ var edit = false;
 var mapData = {};
 var selectedId = ''
 var tableCustomer;
+var ws_data = [];
 
 function init() {
     $.ajax({
@@ -50,6 +51,8 @@ function init() {
 
 function initData() {
     tableCustomer.clear();
+    ws_data = [];
+    ws_data.push(['Kode', 'Nama', 'Deskripsi', 'Status']);
     $.ajax({
         type: "GET",
         url: "/api/customer/find",
@@ -61,6 +64,9 @@ function initData() {
             } else {
                 html = '';
                 for (i in response.data) {
+                    ws_data.push(
+                        [response.data[i].code, response.data[i].name, response.data[i].description, (response.data[i].active ? 'Aktif' : 'Tidak Aktif')]
+                    )
                     mapData[response.data[i].id] = response.data[i]
                     tableCustomer.row.add([
                         response.data[i].code,
@@ -144,6 +150,31 @@ function editData() {
             }
         }
     });
+}
+
+function download() {
+    var wb = XLSX.utils.book_new();
+    wb.Props = {
+        Title: "Customer",
+        Subject: "Customer",
+        Author: "UD Tunas Jaya",
+        CreatedDate: new Date(2017, 12, 19)
+    };
+
+    wb.SheetNames.push("Customer");
+    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+    wb.Sheets["Customer"] = ws;
+
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+    function s2ab(s) {
+
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+
+    }
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'customer.xlsx');
 }
 
 init();

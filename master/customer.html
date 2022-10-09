@@ -132,7 +132,8 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <button id="add-btn" type="button" class="btn btn-primary" hidden data-toggle="modal" data-target="#add-modal" onclick="prepareAdd()">Tambah Data
+                            <button id="add-btn" type="button" class="btn btn-primary" hidden data-toggle="modal"
+                                data-target="#add-modal" onclick="prepareAdd()">Tambah Data
                                 Customer</button>
                             <table id="table-data" class="table table-bordered table-striped">
                                 <thead>
@@ -147,6 +148,7 @@
                                 <tbody id="data-body">
                                 </tbody>
                             </table>
+                            <button id="download-btn" type="button" class="btn btn-primary" onclick="download()">Download</button>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -212,7 +214,8 @@
                         </div>
                         <div class="form-group">
                             <label>Deskripsi</label>
-                            <input type="text" class="form-control" id="description-edit" placeholder="Deskripsi Customer">
+                            <input type="text" class="form-control" id="description-edit"
+                                placeholder="Deskripsi Customer">
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>
@@ -270,6 +273,8 @@
     <script src="/plugins/select2/js/select2.full.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/dist/js/adminlte.min.js"></script>
+    <!-- XLS -->
+    <script src="/dist/js/xlsx.full.min.js"></script>
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>

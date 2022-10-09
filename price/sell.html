@@ -154,6 +154,7 @@
                                         <tbody id="product-data-body">
                                         </tbody>
                                     </table>
+                                    <button id="download-btn" type="button" class="btn btn-primary" onclick="download()">Download</button>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +191,8 @@
                         </div>
                         <div class="form-group">
                             <label>Harga</label>
-                            <input type="text" class="form-control" id="price" placeholder="Harga" onkeyup="hargaChange();">
+                            <input type="text" class="form-control" id="price" placeholder="Harga"
+                                onkeyup="hargaChange();">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -288,6 +290,8 @@
     <script src="/plugins/select2/js/select2.full.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/dist/js/adminlte.min.js"></script>
+    <!-- XLS -->
+    <script src="/dist/js/xlsx.full.min.js"></script>
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>

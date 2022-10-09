@@ -90,6 +90,8 @@ function hargaChange() {
 }
 
 function initData() {
+    ws_data = [];
+    ws_data.push(['Kode', 'Nama', 'Satuan', 'Harga']);
     tableProduct.clear();
     customerId = $('#supplier-modal-select').val();
 
@@ -146,6 +148,10 @@ function initData() {
             }
 
             productPriceMap[products[i].id] = product
+
+            ws_data.push(
+                [products[i].code, products[i].name, mapUnit[products[i].unitId].code, price]
+            )
 
             tableProduct.row.add([
                 products[i].code,
@@ -253,6 +259,31 @@ function prepareView(productId) {
             }
         }
     });
+}
+
+function download() {
+    var wb = XLSX.utils.book_new();
+    wb.Props = {
+        Title: "Harga Jual",
+        Subject: "Harga Jual",
+        Author: "UD Tunas Jaya",
+        CreatedDate: new Date(2017, 12, 19)
+    };
+
+    wb.SheetNames.push("Harga Jual");
+    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+    wb.Sheets["Harga Jual"] = ws;
+
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+    function s2ab(s) {
+
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+
+    }
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'Harga Jual.xlsx');
 }
 
 init();
