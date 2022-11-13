@@ -105,6 +105,32 @@ function initData() {
 function prepareAdd() {
     clearInput("code");
     clearInput("name");
+
+    var name = document.getElementById("name");
+    name.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            submit();
+            $('#add-modal').modal('toggle');
+        }
+    });
+
+    var code = document.getElementById("code");
+    code.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            submit();
+            $('#add-modal').modal('toggle');
+        }
+    });
+
+    $('#add-modal').on('shown.bs.modal', function () {
+        $(this).find('#code').focus();
+    }) 
 }
 
 function submit() {
@@ -144,6 +170,43 @@ function prepareEdit(id) {
     html += '<option value="false" ' + (!active ? 'selected' : '') + '>Tidak Aktif</option>'
 
     $('#active-modal-select').html(html);
+
+    var name = document.getElementById("code-edit");
+    name.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            editProduct();
+            $('#edit-modal').modal('toggle');
+        }
+    });
+
+    var code = document.getElementById("name-edit");
+    code.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            editProduct();
+            $('#edit-modal').modal('toggle');
+        }
+    });
+
+    var description = document.getElementById("description-edit");
+    description.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            editProduct();
+            $('#edit-modal').modal('toggle');
+        }
+    });
+
+    $('#edit-modal').on('shown.bs.modal', function () {
+        $(this).find('#code-edit').focus();
+    })
 }
 
 function editProduct() {

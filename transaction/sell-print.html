@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UD. Tunas Jaya</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="/plugins/toastr/toastr.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+    <!-- Main -->
+    <link rel="stylesheet" href="/dist/css/main.css">
+    <link rel="stylesheet" href="/dist/css/faktur.css">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/dist/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/dist/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/dist/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/dist/img/favicon/site.webmanifest">
+</head>
+
+<body>
+
+    <div class="book">
+        <div class="page">
+            <div class="subpage">
+                <table class="faktur-table">
+                    <tr style="height: 40px;">
+                        <td rowspan="4" style="border: solid;vertical-align: middle;">
+                            <span
+                                style="font-size: 40pt;font-weight: bold;padding-right: 5px;padding-left: 5px;">TJ</span>
+                        </td>
+                        <td style="font-size: 16pt;font-weight: bold;width: 34%;padding-left: 10px;">FAKTUR PENJUALAN</td>
+                        <td style="font-size: 10pt;width: 10%;">Tanggal</td>
+                        <td style="font-size: 10pt;width: 1%;">:</td>
+                        <td style="font-size: 10pt;width: 20%;" id="tanggal"></td>
+                        <td style="font-size: 10pt;padding-left: 20px;width: 10%;vertical-align: top;">Kepada</td>
+                        <td style="font-size: 10pt;width: 1%;">:</td>
+                        <td style="font-size: 10pt;" id="kepada"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 12pt;font-weight: bold;padding-left: 10px;">UD. TUNAS JAYA</td>
+                        <td style="font-size: 10pt;">No. Faktur</td>
+                        <td style="font-size: 10pt;width: 1%;">:</td>
+                        <td style="font-size: 10pt;" id="nofaktur"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 10pt;padding-left: 10px;">Pasar Induk Caringin Blok D-25</td>
+                        <td style="font-size: 10pt;">No. PO</td>
+                        <td style="font-size: 10pt;width: 1%;">:</td>
+                        <td style="font-size: 10pt;" id="nopo"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 10pt;padding-left: 10px;">081 374 335 448</td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                        <td style="font-size: 10pt;"></td>
+                    </tr>
+                </table>
+
+                <table style="margin-top: 10px;" class="faktur-content" id="tableItem">
+                    <tr>
+                        <th style="width: 30px;border-top: solid;border-bottom: solid;text-align: center;">No</th>
+                        <th style="width: 350px;border-top: solid;border-bottom: solid;text-align: center;">Nama Item</th>
+                        <th style="width: 200px;border-top: solid;border-bottom: solid;text-align: center;">Jumlah</th>
+                        <th style="width: 200px;border-top: solid;border-bottom: solid;text-align: center;">Satuan</th>
+                        <th style="width: 200px;border-top: solid;border-bottom: solid;text-align: center;">Harga</th>
+                        <th style="width: 200px;border-top: solid;border-bottom: solid;text-align: center;">Total</th>
+                    </tr>
+                </table>
+
+                <hr style="border: solid 1px; width:100%; margin: 4px 0 4px 0;">
+                <table class="faktur-content" style="width: 100%;">
+                    <tr>
+                        <td style="font-size: 10pt;padding-left: 10px;width: 100px;">Keterangan</td>
+                        <td style="font-size: 10pt;width: 10px;">:</td>
+                        <td style="font-size: 10pt;width: 500px;" id="nopo">123456</td>
+                        <td>Sub Total : </td>
+                        <td style="font-size: 10pt;text-align: right;" id="subtotal"></td>
+                    </tr>
+                </table>
+                <table class="faktur-content" style="width: 100%;margin-top: 10px;">
+                    <tr>
+                        <td style="font-size: 10pt;text-align: center;width: 150px;vertical-align: top;">Hormat Kami</td>
+                        <td style="font-size: 10pt;text-align: center;width: 150px;vertical-align: top;">Penerima</td>
+                        <td style="font-size: 10pt;width: 100px;vertical-align: top;padding-left: 60px;">Terbilang</td>
+                        <td style="vertical-align: top;text-align: center;">:</td>
+                        <td style="font-size: 10pt;height: 60px;vertical-align: top;" id="terbilang"></td>
+                    </tr>     
+                    <tr>
+                        <td style="font-size: 10pt;text-align: center;padding-bottom: 8px;">Isa Anshori</td>
+                        <td style="font-size: 10pt;text-align: center;padding-bottom: 8px;">(...........................)</td>
+                    </tr>               
+                </table>
+                <table class="faktur-content" style="width: 100%;">
+                    <tr>
+                        <td style="font-size: 7pt;text-align: left;" id="tanggalcetak">25/09/2022 12:59:59</td>
+                        <td style="font-size: 7pt;text-align: right;" id="userprint">super</td>
+                    </tr> 
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Toastr -->
+    <script src="/plugins/toastr/toastr.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="/plugins/jszip/jszip.min.js"></script>
+    <script src="/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- Select2 -->
+    <script src="/plugins/select2/js/select2.full.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/dist/js/adminlte.min.js"></script>
+    <!-- XLS -->
+    <script src="/dist/js/xlsx.full.min.js"></script>
+    <!-- Main -->
+    <script src="/dist/js/util.js"></script>
+    <script src="/dist/js/main.js"></script>
+    <script src="/dist/js/terbilang.js"></script>
+    <script src="/dist/js/transaction/sell-print.js"></script>    
+    <script>window.print()</script>
+</body>
+
+
+</html>

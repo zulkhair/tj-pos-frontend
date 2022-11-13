@@ -105,7 +105,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Penjualan</h1>
+                            <h1 class="m-0">Laporan</h1>
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6">
@@ -128,7 +128,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Tambah Data Penjualan</h3>
+                            <h3 class="card-title">Laporan Penjualan</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -185,6 +185,7 @@
                                             </tr>
                                         </tfoot>
                                     </table>
+                                    <button id="download-btn" type="button" class="btn btn-primary" onclick="download()">Download</button>
                                 </div>
                             </div>
                         </div>
@@ -259,6 +260,8 @@
     <script src="/plugins/select2/js/select2.full.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/dist/js/adminlte.min.js"></script>
+    <!-- XLS -->
+    <script src="/dist/js/xlsx.full.min.js"></script>
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>

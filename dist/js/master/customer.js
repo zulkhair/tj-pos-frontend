@@ -86,6 +86,43 @@ function prepareAdd() {
     clearInput("code");
     clearInput("name");
     clearInput("description");
+
+    var name = document.getElementById("name");
+    name.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            submit();
+            $('#add-modal').modal('toggle');
+        }
+    });
+
+    var code = document.getElementById("code");
+    code.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            submit();
+            $('#add-modal').modal('toggle');
+        }
+    });
+
+    var description = document.getElementById("description");
+    description.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            submit();
+            $('#add-modal').modal('toggle');
+        }
+    });
+
+    $('#add-modal').on('shown.bs.modal', function () {
+        $(this).find('#code').focus();
+    }) 
 }
 
 function submit() {
@@ -124,6 +161,43 @@ function prepareEdit(id) {
     html += '<option value="false" ' + (!active ? 'selected' : '') + '>Tidak Aktif</option>'
 
     $('#active-modal-select').html(html);
+
+    var name = document.getElementById("code-edit");
+    name.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            editData();
+            $('#edit-modal').modal('toggle');
+        }
+    });
+
+    var code = document.getElementById("name-edit");
+    code.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            editData();
+            $('#edit-modal').modal('toggle');
+        }
+    });
+
+    var description = document.getElementById("description-edit");
+    description.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+
+            editData();
+            $('#edit-modal').modal('toggle');
+        }
+    });
+
+    $('#edit-modal').on('shown.bs.modal', function () {
+        $(this).find('#code-edit').focus();
+    })
 }
 
 function editData() {

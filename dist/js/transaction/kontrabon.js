@@ -121,19 +121,26 @@ function initKontrabon() {
                 toastr.warning(response.message);
             } else {
                 for (i in response.data) {
-                    button = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button><button data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
+                    btnDisabled = response.data[i].status == "CREATED" ? "" : "disabled"
+                    buttonEdit = '<button '+btnDisabled+' type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
+                    buttonPrint = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt " title="Ubah Status ke Lunas" onclick="printKontrabon(\'' + response.data[i].id + '\');"></button>';
+                    buttonLunas = '<button '+btnDisabled+' btnDisabled data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
                     mapKontrabon.set(response.data[i].id, response.data[i]);
                     tableKontrabon.row.add([
                         response.data[i].code,
                         response.data[i].createdTime,
                         response.data[i].status == "CREATED" ? "BELUM DIBAYAR" : "LUNAS",
                         response.data[i].total.toLocaleString('id'),
-                        response.data[i].status == "CREATED" ? button : ""
+                        buttonEdit + buttonPrint + buttonLunas
                     ]).draw(false);
                 }
             }
         }
     });
+}
+
+function printKontrabon(trxId){
+    window.open("kontrabon-print.html?trxId="+trxId)
 }
 
 function initTrx() {
@@ -208,7 +215,7 @@ function initTrxEdit() {
             } else {
                 for (i in response.data) {
                     arrData.push(response.data[i]);
-                    tableTrxEdit1.row.add([                        
+                    tableTrxEdit1.row.add([
                         response.data[i].code,
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
@@ -408,7 +415,7 @@ function submitLunas() {
     });
 }
 
-function prepareLunas(id){
+function prepareLunas(id) {
     selectedKontrabonId = id;
 }
 
@@ -418,25 +425,25 @@ function prepareEdit(id) {
     initTrxEdit();
 }
 
-function selectAll(){
+function selectAll() {
     for (i in arrData) {
         mapSelected.set(arrData[i].id, arrData[i]);
-        $( "#checkbox"+i ).prop( "checked", true );
-    }    
+        $("#checkbox" + i).prop("checked", true);
+    }
 }
 
-function selectAll2(){
+function selectAll2() {
     for (i in arrData) {
         mapSelected.set(arrData[i].id, arrData[i]);
-        $( "#checkbox1"+i ).prop( "checked", true );
-    }    
+        $("#checkbox1" + i).prop("checked", true);
+    }
 }
 
-function selectAll3(){
+function selectAll3() {
     for (i in arrDataEdit) {
         mapSelectedEdit.set(arrDataEdit[i].id, arrDataEdit[i]);
-        $( "#checkboxedit"+i ).prop( "checked", true );
-    }    
+        $("#checkboxedit" + i).prop("checked", true);
+    }
 }
 
 init();

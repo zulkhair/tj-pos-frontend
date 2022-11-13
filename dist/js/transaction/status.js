@@ -104,21 +104,31 @@ function reloadTable() {
                 for (i in response.data) {
                     mapTrx.set(response.data[i].id, response.data[i])
                     disable = response.data[i].status == 'DIBAYAR' ? 'disabled' : '';
-                    btnDis = response.data[i].status == 'PEMBUATAN' ? '' : 'hidden disabled';
+                    btnDis = response.data[i].status == 'PEMBUATAN' ? '' : 'disabled';
+                    trxStatus = response.data[i].status;
+                    if (response.data[i].status == 'PEMBUATAN'){
+                        trxStatus = 'DICETAK';
+                    }
                     tableTrx.row.add([
                         count,
                         response.data[i].code,
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
                         response.data[i].total.toLocaleString('id'),
-                        response.data[i].status,
-                        '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="View Detail" onclick="viewdetail(\'' + response.data[i].id + '\');"></button><button '+btnDis+' type="button" data-toggle="modal" data-target="#remove-modal" class="btn-tbl btn btn-block btn-primary fas fa-circle-minus " title="Hapus Faktur" onclick="prepareDelete(\'' + response.data[i].id + '\');"></button>'
+                        trxStatus,
+                        '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="View Detail" onclick="viewdetail(\'' + response.data[i].id + '\');">' +
+                        '</button><button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt" title="Print Faktur" onclick="printFaktur(\'' + response.data[i].id + '\');"></button>' +
+                        '</button><button '+btnDis+' type="button" data-toggle="modal" data-target="#remove-modal" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus Faktur" onclick="prepareDelete(\'' + response.data[i].id + '\');"></button>'
                     ]).draw(false);
                     count++;                    
                 }
             }
         }
     });
+}
+
+function printFaktur(trxId){
+    window.open("sell-print.html?trxId="+trxId)
 }
 
 function viewdetail(trxId) {

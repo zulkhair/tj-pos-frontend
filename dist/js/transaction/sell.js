@@ -86,7 +86,7 @@ function initProduct() {
             } else {
                 for (i in response.data) {
                     mapProduct.set(response.data[i].id, response.data[i]);
-                    mapProductCodeName.set(response.data[i].code + ' | '+ response.data[i].name, response.data[i])
+                    mapProductCodeName.set(response.data[i].code + ' | ' + response.data[i].name, response.data[i])
                     arrProduct.push(response.data[i]);
                 }
 
@@ -160,9 +160,9 @@ function removeRow(value) {
     mapData.delete(values[0]);
 
     if (dataRow.length == 0) {
-        addNewRow();   
+        addNewRow();
     }
-    
+
     reloadTable(undefined)
 }
 
@@ -181,7 +181,7 @@ function getProductInput(index) {
     optionhtml = '<input type="text" class="form-control" id="product-select-' + index + '" value="" list="products" style="width:200px" onkeyup="productChange(' + index + ')">';
     optionhtml = optionhtml + '<datalist id="products">';
     for (i in arrProduct) {
-        optionhtml = optionhtml + '<option>' + arrProduct[i].code + ' | '+ arrProduct[i].name + '</option>';
+        optionhtml = optionhtml + '<option>' + arrProduct[i].code + ' | ' + arrProduct[i].name + '</option>';
     }
     optionhtml = optionhtml + '</datalist></input>';
 
@@ -291,12 +291,12 @@ function productChange(index) {
 
         setMapData(index);
         document.getElementById("jumlah-" + index).focus();
-    }    
+    }
 }
 
 function jumlahChange(index) {
     value = $("#jumlah-" + index).val();
-    if (value == "" || value == undefined){
+    if (value == "" || value == undefined) {
         value = "0"
     }
     jumlah = parseFloat(value);
@@ -309,7 +309,7 @@ function jumlahChange(index) {
 
 function jualChange(index) {
     value = $("#jual-" + index).val();
-    if (value == "" || value == undefined){
+    if (value == "" || value == undefined) {
         value = "0"
     }
     jumlah = parseFloat($("#jumlah-" + index).val());
@@ -323,15 +323,13 @@ function jualChange(index) {
 
 function beliChange(index) {
     value = $("#beli-" + index).val();
-    if (value == "" || value == undefined){
+    if (value == "" || value == undefined) {
         value = "0"
     }
     beli = parseInt(value.replaceAll('.', ''));
     $("#beli-" + index).val(beli.toLocaleString('id'));
 
     setMapData(index);
-
-    
 }
 
 function setMapData(index) {
@@ -382,11 +380,13 @@ function submit() {
             contentType: 'application/json',
             async: false,
             success: function (response) {
-                if (response.status != 0) {
+                if (response.status != 0) {                    
                     toastr.warning(response.message);
                 } else {
                     toastr.info(response.message);
                     initData();
+                    txId = response.data.id;
+                    window.open('sell-print.html?trxId=' + txId);
                 }
             }
         });
@@ -394,7 +394,7 @@ function submit() {
 
 }
 
-function sumTotal(){
+function sumTotal() {
     total = 0;
     for (i in dataRow) {
         data = mapData.get(dataRow[i]);

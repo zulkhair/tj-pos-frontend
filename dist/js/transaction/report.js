@@ -2,6 +2,7 @@ var mapTrx = new Map();
 var tableTrx;
 var tableDetail;
 var selectedTrxId;
+var ws_data = [];
 
 function init() {
     tableTrx = $("#table-trx").DataTable({
@@ -65,6 +66,9 @@ function initCustomer() {
 function reloadTable() {
     tableTrx.clear().draw();
     mapTrx = new Map();
+
+    ws_data = [];
+    ws_data.push(['Tanggal', 'No Faktur', 'No PO', 'Status', 'Produk', 'Jumlah Beli', 'Harga Beli', 'Total Beli', 'Jumlah Jual', 'Harga Jual', 'Total Jual', 'L/R']);
 
     customerId = $('#customer-select').val();
     stats = $('#status-select').val();
@@ -133,6 +137,9 @@ function reloadTable() {
                             style = 'class="bgred"'
                         }
 
+                        ws_data.push([date, code, nopo, stats, details[j].productCode, (buyQuantity).toLocaleString('id'), (buyPrice).toLocaleString('id'), 
+                        (totalBuy).toLocaleString('id'), (quantity).toLocaleString('id'), (sellPrice).toLocaleString('id'), (totalSell).toLocaleString('id'), 
+                        (lr).toLocaleString('id')]);
                         tableTrx.row.add([
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + date + '</p>',
                             '<p style="' + stylerow + 'padding:12px;margin:0">' + code + '</p>',
@@ -160,6 +167,10 @@ function reloadTable() {
                         firstDate = true;
                         dateTotal = response.data[i].date;
                         styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
+
+                        ws_data.push(['', '', '', '', '', '', '', 
+                        (totalBuySection).toLocaleString('id'), '', '', (totalSellSection).toLocaleString('id'), 
+                        (totalSection).toLocaleString('id')]);
                         tableTrx.row.add([
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                             '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
@@ -175,6 +186,9 @@ function reloadTable() {
                             '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSection).toLocaleString('id') + '</p>'
                         ]).draw(false);
 
+                        ws_data.push(['', '', '', '', '', '', '', 
+                        '', '', '', '', 
+                        '']);
                         tableTrx.row.add([
                             '<p style="padding:0;margin:0">&nbsp;</p>',
                             '',
@@ -196,10 +210,39 @@ function reloadTable() {
                     }
 
                 }
+                ws_data.push(['', '', '', '', '', '', '', 
+                        '', '', '', 'Total', 
+                        total.toLocaleString('id')]);
                 styleTotal = total <= 0 ? 'class="bgred"' : '';
                 $('#total').html('<p style="margin:0;padding:12px;" ' + styleTotal + '>' + total.toLocaleString('id') + '</p>');
             }
         }
     });
 }
+
+function download() {
+    var wb = XLSX.utils.book_new();
+    wb.Props = {
+        Title: "Laporan",
+        Subject: "Laporan",
+        Author: "UD Tunas Jaya",
+        CreatedDate: new Date()
+    };
+
+    wb.SheetNames.push("Sheet 1");
+    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+    wb.Sheets["Sheet 1"] = ws;
+
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+    function s2ab(s) {
+
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+
+    }
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'laporan.xlsx');
+}
+
 init();

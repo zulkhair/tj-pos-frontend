@@ -138,7 +138,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nama Template</th>
-                                        <th width="96px"></th>
+                                        <th width="150px"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="product-data-body">
@@ -167,6 +167,7 @@
                                     <tbody id="product-data-body">
                                     </tbody>
                                 </table>
+                                <button id="download-btn" type="button" class="btn btn-primary" onclick="download()">Download</button>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -215,8 +216,21 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
+                            <label>Kode</label>
+                            <input type="text" class="form-control" id="code-sub" placeholder="Kode" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input type="text" class="form-control" id="name-sub" placeholder="Nama" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Satuan</label>
+                            <input type="text" class="form-control" id="unit-sub" placeholder="Satuan" disabled>
+                        </div>
+                        <div class="form-group">
                             <label>Harga</label>
-                            <input type="number" class="form-control" id="price" placeholder="Harga">
+                            <input type="text" class="form-control" id="price" placeholder="Harga"
+                                onkeyup="hargaChange();">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -264,6 +278,29 @@
         </div>
         <!-- /.modal -->
 
+        <div class="modal fade" id="remove-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Hapus Template</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah anda yakin untuk menghapus template ini?
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            onclick="deleteTemplate()">Ya</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
         <!-- Main Footer -->
         <footer class="main-footer">
             <!-- To the right -->
@@ -301,6 +338,8 @@
     <script src="/plugins/select2/js/select2.full.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/dist/js/adminlte.min.js"></script>
+     <!-- XLS -->
+     <script src="/dist/js/xlsx.full.min.js"></script>
     <!-- Main -->
     <script src="/dist/js/util.js"></script>
     <script src="/dist/js/main.js"></script>
