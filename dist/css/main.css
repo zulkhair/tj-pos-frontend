@@ -98,4 +98,19 @@
   height: 18px;
 }
 
+.numericTablePrintBorderBot {
+  text-align: right;
+  height: 18px;
+  font-size: 10pt;
+  border-bottom: solid thin;
+  padding-right: 4px;
+}
+
+.centerTablePrintBorderBot {
+  text-align: center;
+  height: 18px;
+  font-size: 10pt;
+  border-bottom: solid thin;
+}
+
 /*# sourceMappingURL=main.css.map */

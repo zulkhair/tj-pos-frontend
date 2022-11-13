@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #FAFAFA;
-  font: 12pt "Tahoma";
+  font: 12pt "Verdana";
 }
 
 * {
@@ -15,7 +15,7 @@ body {
 .page {
   width: 210mm;
   min-height: 297mm;
-  padding: 20mm;
+  padding: 15mm;
   margin: 10mm auto;
   border: 1px #D3D3D3 solid;
   border-radius: 5px;
@@ -24,10 +24,8 @@ body {
 }
 
 .subpage {
-  padding: 1cm;
-  border: 5px red solid;
-  height: 257mm;
-  outline: 2cm #FFEAEA solid;
+  position: relative;
+  border: solid;
 }
 
 @page {
