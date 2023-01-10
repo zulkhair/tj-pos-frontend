@@ -82,43 +82,32 @@ function initData() {
 
 }
 
+function eventAdd(event) {
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+
+        submit();
+        $('#add-modal').modal('toggle');
+    }
+}
+
 function prepareAdd() {
     clearInput("code");
     clearInput("name");
     clearInput("description");
 
     var name = document.getElementById("name");
-    name.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            // Cancel the default action, if needed
-            event.preventDefault();
-
-            submit();
-            $('#add-modal').modal('toggle');
-        }
-    });
-
     var code = document.getElementById("code");
-    code.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            // Cancel the default action, if needed
-            event.preventDefault();
-
-            submit();
-            $('#add-modal').modal('toggle');
-        }
-    });
-
     var description = document.getElementById("description");
-    description.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            // Cancel the default action, if needed
-            event.preventDefault();
 
-            submit();
-            $('#add-modal').modal('toggle');
-        }
-    });
+    name.addEventListener("keypress", eventAdd);
+    code.addEventListener("keypress", eventAdd);
+    description.addEventListener("keypress", eventAdd);
+    
+    oneTimeListener(name, "keypress", eventAdd);
+    oneTimeListener(code, "keypress", eventAdd);
+    oneTimeListener(description, "keypress", eventAdd);
 
     $('#add-modal').on('shown.bs.modal', function () {
         $(this).find('#code').focus();
@@ -149,6 +138,16 @@ function submit() {
     });
 }
 
+function eventEdit(event) {
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+
+        editData();
+        $('#edit-modal').modal('toggle');
+    }
+}
+
 function prepareEdit(id) {
     selectedId = id;
 
@@ -163,37 +162,16 @@ function prepareEdit(id) {
     $('#active-modal-select').html(html);
 
     var name = document.getElementById("code-edit");
-    name.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            // Cancel the default action, if needed
-            event.preventDefault();
-
-            editData();
-            $('#edit-modal').modal('toggle');
-        }
-    });
-
     var code = document.getElementById("name-edit");
-    code.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            // Cancel the default action, if needed
-            event.preventDefault();
-
-            editData();
-            $('#edit-modal').modal('toggle');
-        }
-    });
-
     var description = document.getElementById("description-edit");
-    description.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            // Cancel the default action, if needed
-            event.preventDefault();
 
-            editData();
-            $('#edit-modal').modal('toggle');
-        }
-    });
+    name.addEventListener("keypress", eventEdit);
+    code.addEventListener("keypress", eventEdit);
+    description.addEventListener("keypress", eventEdit);
+
+    oneTimeListener(name, "keypress", eventEdit);
+    oneTimeListener(code, "keypress", eventEdit);
+    oneTimeListener(description, "keypress", eventEdit);
 
     $('#edit-modal').on('shown.bs.modal', function () {
         $(this).find('#code-edit').focus();

@@ -141,3 +141,16 @@ function endDate(){
     lastDate = yyyy + '-' + mm + '-' + dd;
     return lastDate;
 }
+
+function oneTimeListener(node, type, callback) {
+    // create event
+    node.addEventListener(type, function listener(e) {
+
+        // remove event listener
+        e.target.removeEventListener(e.type, listener);
+
+        // call handler with original context 
+        return callback.call(this, e); 
+
+    });
+}

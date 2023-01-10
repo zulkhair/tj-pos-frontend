@@ -3,6 +3,7 @@ var mapProduct = {};
 var selectedId = ''
 var tableProduct;
 var ws_data = [];
+var units;
 
 function init() {
     $.ajax({
@@ -58,6 +59,7 @@ function initUnit() {
                 toastr.warning(response.message);
             } else {
                 optionhtml = '';
+                units = response.data;
                 for (i in response.data) {
                     optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
                 }
@@ -130,7 +132,7 @@ function prepareAdd() {
 
     $('#add-modal').on('shown.bs.modal', function () {
         $(this).find('#code').focus();
-    }) 
+    })
 }
 
 function submit() {
@@ -165,6 +167,15 @@ function prepareEdit(id) {
     $("#name-edit").val(mapProduct[id].name);
     $("#description-edit").val(mapProduct[id].description);
 
+    unitId = mapProduct[id].unitId
+    optionhtml = '';
+    for (i in units) {
+        console.log(i);
+        optionhtml = optionhtml + '<option value="' + units[i].id + '" ' + (unitId == units[i].id ? 'selected' : '') + '>' + units[i].code + '</option>';
+    }
+    console.log(optionhtml);
+    $('#unit-modal-select-edit').html(optionhtml);
+
     active = mapProduct[id].active
     html = '<option value="true" ' + (active ? 'selected' : '') + '>Aktif</option>'
     html += '<option value="false" ' + (!active ? 'selected' : '') + '>Tidak Aktif</option>'
@@ -172,35 +183,38 @@ function prepareEdit(id) {
     $('#active-modal-select').html(html);
 
     var name = document.getElementById("code-edit");
-    name.addEventListener("keypress", function (event) {
+    name.addEventListener("keypress", function f(event) {
         if (event.key === "Enter") {
             // Cancel the default action, if needed
             event.preventDefault();
 
             editProduct();
             $('#edit-modal').modal('toggle');
+            name.removeEventListener("keypress", f)
         }
     });
 
     var code = document.getElementById("name-edit");
-    code.addEventListener("keypress", function (event) {
+    code.addEventListener("keypress", function f(event) {
         if (event.key === "Enter") {
             // Cancel the default action, if needed
             event.preventDefault();
 
             editProduct();
             $('#edit-modal').modal('toggle');
+            code.removeEventListener("keypress", f)
         }
     });
 
     var description = document.getElementById("description-edit");
-    description.addEventListener("keypress", function (event) {
+    description.addEventListener("keypress", function f(event) {
         if (event.key === "Enter") {
             // Cancel the default action, if needed
             event.preventDefault();
 
             editProduct();
             $('#edit-modal').modal('toggle');
+            description.removeEventListener("keypress", f)
         }
     });
 
@@ -213,6 +227,7 @@ function editProduct() {
     data = {};
     data["id"] = selectedId;
     data["code"] = $("#code-edit").val().trim();
+    data["unitId"] = $("#unit-modal-select-edit").val();
     data["name"] = $("#name-edit").val().trim();
     data["description"] = $("#description-edit").val().trim();
     data["active"] = $("#active-modal-select").val();

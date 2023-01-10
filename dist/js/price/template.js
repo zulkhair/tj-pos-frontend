@@ -179,19 +179,33 @@ function prepareEdit(id) {
     });
 
     var harga = document.getElementById("price");
-    harga.addEventListener("keypress", function (event) {
+    harga.addEventListener("keypress", function ef(event) {
         if (event.key === "Enter") {
             // Cancel the default action, if needed
             event.preventDefault();
 
             submit();
             $('#submit-modal').modal('toggle');
+            harga.removeEventListener("keypress", ef)
         }
     });
 
     $('#submit-modal').on('shown.bs.modal', function () {
         $(this).find('#price').focus();
     })  
+}
+
+function oneTimeListener(node, type, callback) {
+    // create event
+    node.addEventListener(type, function listener(e) {
+
+        // remove event listener
+        e.target.removeEventListener(e.type, listener);
+
+        // call handler with original context 
+        return callback.call(this, e); 
+
+    });
 }
 
 function hargaChange() {
@@ -205,7 +219,6 @@ function hargaChange() {
 
 function prepareSubmit(productId) {
     selectedProductId = productId
-    console.log(productPriceMap[productId]);
     $("#code-sub").val(productPriceMap[productId].code);
     $("#name-sub").val(productPriceMap[productId].name);
     $("#unit-sub").val(productPriceMap[productId].unit);
