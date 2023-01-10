@@ -76,6 +76,7 @@ function initData() {
                         response.data[i].name,
                         '<button class="btn-tbl btn btn-block btn-primary fas fa-search " title="Lihat Template" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'+
                         '<button data-toggle="modal" data-target="#status-modal" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Terapkan Harga" onclick="prepareApply(\'' + response.data[i].id + '\');"></button>'+
+                        '<button data-toggle="modal" data-target="#copy-modal" class="btn-tbl btn btn-block btn-primary fas fa-copy " title="Copy Template" onclick="prepareCopy(\'' + response.data[i].id + '\');"></button>'+
                         '<button type="button" data-toggle="modal" data-target="#remove-modal" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus Template" onclick="prepareDelete(\'' + response.data[i].id + '\');"></button>'
                     ]).draw(false);
                 }
@@ -361,6 +362,35 @@ function download() {
 
     }
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'template-harga.xlsx');
+}
+
+function prepareCopy(id) {
+    selectedTemplateId = id;
+}
+
+function submitCopy() {
+    data = {};
+    data["templateId"] = selectedTemplateId;
+    selectedTemplateId = "";
+    data["name"] = $("#name-copy").val();
+    token = getCookie("token")
+
+    $.ajax({
+        type: "POST",
+        url: "/api/price/template/copy",
+        headers: { "token": token },
+        data: JSON.stringify(data),
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                toastr.info(response.message);
+                initData()
+                $("#name-copy").val("");
+            }
+        }
+    });
 }
 
 
