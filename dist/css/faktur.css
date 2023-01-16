@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #FAFAFA;
-  font: 12pt "Verdana";
+  font: 16pt "Arial";
 }
 
 * {
@@ -15,7 +15,7 @@ body {
 .page {
   width: 9.5in;
   min-height: 5.5in;
-  padding: 0.5cm;
+  padding: 0.8cm 0.5cm 0 0.5cm;
   margin: 0.25cm;
   border: 1px #D3D3D3 solid;
   border-radius: 5px;
@@ -36,8 +36,9 @@ body {
     width: 9.5in;
     height: 5.5in;
   }
+
   .page {
-    margin: 0;
+    margin: 0 0 0 0;
     border: initial;
     border-radius: initial;
     width: initial;
