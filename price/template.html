@@ -149,7 +149,7 @@
                     </div>
                     <div class="card" id="card2" hidden>
                         <div class="card-header">
-                            <h3 class="card-title">Edit Template Harga</h3>
+                            <h3 class="card-title" id="templateTitle">Edit Template Harga</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -162,6 +162,7 @@
                                             <th>Satuan</th>
                                             <th>Harga</th>
                                             <th style="width: 48px;"></th>
+                                            <th style="width: 20px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="product-data-body">
@@ -217,6 +218,12 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name">Nama Template</label>
+                            <input type="text" class="form-control" id="name-copy-old" disabled>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Nama Template Baru</label>
                             <input type="text" class="form-control" id="name-copy" placeholder="Nama Template">
                         </div>
                     </div>

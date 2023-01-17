@@ -7,6 +7,8 @@ var tableProduct;
 var mapUnit = {};
 var mapTemplate = {};
 var ws_data = [];
+var mapSelected = new Map();
+var mapPrice = {};
 
 function init() {
 
@@ -71,12 +73,12 @@ function initData() {
             } else {
                 html = '';
                 for (i in response.data) {
-                    mapTemplate[response.data[i].id] = response.data[i].name
+                    mapTemplate[response.data[i].id] = response.data[i]
                     tableTemplate.row.add([
                         response.data[i].name,
-                        '<button class="btn-tbl btn btn-block btn-primary fas fa-search " title="Lihat Template" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'+
-                        '<button data-toggle="modal" data-target="#status-modal" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Terapkan Harga" onclick="prepareApply(\'' + response.data[i].id + '\');"></button>'+
-                        '<button data-toggle="modal" data-target="#copy-modal" class="btn-tbl btn btn-block btn-primary fas fa-copy " title="Copy Template" onclick="prepareCopy(\'' + response.data[i].id + '\');"></button>'+
+                        '<button class="btn-tbl btn btn-block btn-primary fas fa-search " title="Lihat Template" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>' +
+                        '<button data-toggle="modal" data-target="#status-modal" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Terapkan Harga" onclick="prepareApply(\'' + response.data[i].id + '\');"></button>' +
+                        '<button data-toggle="modal" data-target="#copy-modal" class="btn-tbl btn btn-block btn-primary fas fa-copy " title="Copy Template" onclick="prepareCopy(\'' + response.data[i].id + '\');"></button>' +
                         '<button type="button" data-toggle="modal" data-target="#remove-modal" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus Template" onclick="prepareDelete(\'' + response.data[i].id + '\');"></button>'
                     ]).draw(false);
                 }
@@ -109,14 +111,16 @@ function submitAdd() {
 }
 
 function prepareEdit(id) {
+    $('#templateTitle').text("Edit Template Harga [" + mapTemplate[id].name + "]");
+    mapSelected = new Map();
+
     ws_data = [];
-    ws_data.push(['Kode', 'Nama', 'Satuan', 'Harga']);
     selectedTemplateId = id;
     hideTag("card1");
     showTag("card2");
     tableProduct.clear();
 
-    var mapPrice = {};
+    mapPrice = {};
     $.ajax({
         type: "GET",
         url: "/api/price/template/findDetail",
@@ -129,7 +133,7 @@ function prepareEdit(id) {
             } else {
                 html = '';
                 for (i in response.data) {
-                    mapPrice[response.data[i].productId] = response.data[i].price
+                    mapPrice[response.data[i].productId] = response.data[i]
                 }
             }
         }
@@ -148,7 +152,7 @@ function prepareEdit(id) {
                     products = response.data[i]
                     var price = 0;
                     if (mapPrice[products.id] !== undefined) {
-                        price = mapPrice[products.id];
+                        price = mapPrice[products.id].price;
                     }
 
                     product = {
@@ -159,11 +163,10 @@ function prepareEdit(id) {
                         "price": price.toLocaleString('id'),
                     }
 
+                    downloadChecked = mapPrice[products.id].checked;
                     ws_data.push(
-                        [products.code, products.name, mapUnit[products.unitId].code, price]
+                        [products.id, products.code, products.name, mapUnit[products.unitId].code, price]
                     )
-
-                    console.log(price);
 
                     productPriceMap[products.id] = product
 
@@ -172,8 +175,15 @@ function prepareEdit(id) {
                         products.name,
                         mapUnit[products.unitId].code,
                         price.toLocaleString('id'),
-                        '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products.id + '\');"></button>'
+                        '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareSubmit(\'' + products.id + '\');"></button>',
+                        '<input type="checkbox" ' + (downloadChecked ? 'checked' : '') + ' id="checkbox' + i + '">'
                     ]).draw(false);
+
+                    if (downloadChecked) {
+                        mapSelected.set(product.id, product);
+                    }
+
+                    setChkbxListener(i, product.id, product);
                 }
             }
         }
@@ -193,7 +203,18 @@ function prepareEdit(id) {
 
     $('#submit-modal').on('shown.bs.modal', function () {
         $(this).find('#price').focus();
-    })  
+    })
+}
+
+function setChkbxListener(i, id, data) {
+    const checkbox = document.getElementById('checkbox' + i);
+    checkbox.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            mapSelected.set(id, data);
+        } else {
+            mapSelected.delete(id);
+        }
+    })
 }
 
 function oneTimeListener(node, type, callback) {
@@ -204,7 +225,7 @@ function oneTimeListener(node, type, callback) {
         e.target.removeEventListener(e.type, listener);
 
         // call handler with original context 
-        return callback.call(this, e); 
+        return callback.call(this, e);
 
     });
 }
@@ -265,7 +286,8 @@ function back() {
 
 function prepareApply(id) {
     selectedTemplateId = id;
-    $('#templateName').val(mapTemplate[id]);
+    selectedAppliedTo = mapTemplate[id].appliedTo.split(";");
+    $('#templateName').val(mapTemplate[id].name);
 
     $("#customer-select").val('');
     $.ajax({
@@ -287,6 +309,9 @@ function prepareApply(id) {
     });
 
     $('.select2').select2()
+
+    $("#customer-select").val(selectedAppliedTo);
+    $("#customer-select").change();
 }
 
 function apply() {
@@ -312,15 +337,15 @@ function apply() {
     });
 }
 
-function prepareDelete(id){
+function prepareDelete(id) {
     selectedTemplateId = id;
 }
 
-function deleteTemplate(){
+function deleteTemplate() {
     request = {
         "templateId": selectedTemplateId
     }
-    
+
     $.ajax({
         type: "POST",
         url: "/api/price/template/delete",
@@ -349,7 +374,17 @@ function download() {
     };
 
     wb.SheetNames.push("Template Harga");
-    var ws = XLSX.utils.aoa_to_sheet(ws_data);
+    dlData = [];
+    templateDetailIds = [];
+    dlData.push(['Kode', 'Nama', 'Satuan', 'Harga']);
+    for (i in ws_data) {
+        if (mapSelected.has(ws_data[i][0])){
+            dlData.push([ws_data[i][1], ws_data[i][2], ws_data[i][3], ws_data[i][4]]);
+            console.log(mapPrice[ws_data[i][0]])
+            templateDetailIds.push(mapPrice[ws_data[i][0]].id);
+        }
+    }
+    var ws = XLSX.utils.aoa_to_sheet(dlData);
     wb.Sheets["Template Harga"] = ws;
 
     var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -362,10 +397,28 @@ function download() {
 
     }
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'template-harga.xlsx');
+
+    data = {};
+    data["templateId"] = selectedTemplateId;
+    data["templateDetailIds"] = templateDetailIds;
+    token = getCookie("token")
+
+    $.ajax({
+        type: "POST",
+        url: "/api/price/template/download",
+        headers: { "token": token },
+        data: JSON.stringify(data),
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            }
+        }
+    });
 }
 
 function prepareCopy(id) {
     selectedTemplateId = id;
+    $("#name-copy-old").val(mapTemplate[id].name)
 }
 
 function submitCopy() {
