@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #FAFAFA;
-  font: 16pt "Times New Roman";
+  font: 16pt "Arial";
 }
 
 * {
@@ -36,6 +36,7 @@ body {
     width: 9.5in;
     height: 5.5in;
   }
+
   .page {
     margin: 0 0 0 0;
     border: initial;
@@ -52,7 +53,7 @@ body {
 }
 
 .faktur-content {
-  font-size: 12pt;
+  font-size: 10pt;
 }
 
 /*# sourceMappingURL=faktur.css.map */
