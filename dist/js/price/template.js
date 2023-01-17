@@ -151,8 +151,10 @@ function prepareEdit(id) {
                 for (i in response.data) {
                     products = response.data[i]
                     var price = 0;
+                    var downloadChecked = false;
                     if (mapPrice[products.id] !== undefined) {
                         price = mapPrice[products.id].price;
+                        downloadChecked = mapPrice[products.id].checked;
                     }
 
                     product = {
@@ -163,7 +165,6 @@ function prepareEdit(id) {
                         "price": price.toLocaleString('id'),
                     }
 
-                    downloadChecked = mapPrice[products.id].checked;
                     ws_data.push(
                         [products.id, products.code, products.name, mapUnit[products.unitId].code, price]
                     )
