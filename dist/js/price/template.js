@@ -209,13 +209,15 @@ function prepareEdit(id) {
 
 function setChkbxListener(i, id, data) {
     const checkbox = document.getElementById('checkbox' + i);
-    checkbox.addEventListener('change', (event) => {
-        if (event.currentTarget.checked) {
-            mapSelected.set(id, data);
-        } else {
-            mapSelected.delete(id);
-        }
-    })
+    if (checkbox != undefined) {
+        checkbox.addEventListener('change', (event) => {
+            if (event.currentTarget.checked) {
+                mapSelected.set(id, data);
+            } else {
+                mapSelected.delete(id);
+            }
+        })
+    }
 }
 
 function oneTimeListener(node, type, callback) {
@@ -379,10 +381,13 @@ function download() {
     templateDetailIds = [];
     dlData.push(['Kode', 'Nama', 'Satuan', 'Harga']);
     for (i in ws_data) {
-        if (mapSelected.has(ws_data[i][0])){
+        if (mapSelected.has(ws_data[i][0])) {
             dlData.push([ws_data[i][1], ws_data[i][2], ws_data[i][3], ws_data[i][4]]);
-            console.log(mapPrice[ws_data[i][0]])
-            templateDetailIds.push(mapPrice[ws_data[i][0]].id);
+
+            if (mapPrice[products.id] !== undefined) {
+                templateDetailIds.push(mapPrice[ws_data[i][0]].id);
+            }
+            
         }
     }
     var ws = XLSX.utils.aoa_to_sheet(dlData);
