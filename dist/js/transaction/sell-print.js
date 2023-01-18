@@ -7,8 +7,8 @@ tableItem = $("#tableItem").DataTable({
     "autoWidth": false,
     "responsive": false,
     "columns": [
-        { className: "centerTablePrint" },
-        { className: "centerTablePrint" },
+        { className: "rightTablePrint" },
+        { className: "leftTablePrint" },
         { className: "centerTablePrint" },
         { className: "centerTablePrint" },
         { className: "numericTablePrint" },
@@ -51,7 +51,7 @@ $.ajax({
                         ]).draw(false);
                     } else {
                         tableItem.row.add([
-                            index + 1,
+                            index + 1 +".",
                             transactionDetail[index].productName,
                             transactionDetail[index].quantity,
                             transactionDetail[index].unitCode,
