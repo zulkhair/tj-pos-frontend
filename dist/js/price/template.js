@@ -384,7 +384,7 @@ function download() {
         if (mapSelected.has(ws_data[i][0])) {
             dlData.push([ws_data[i][1], ws_data[i][2], ws_data[i][3], ws_data[i][4]]);
 
-            if (mapPrice[products.id] !== undefined) {
+            if (mapPrice[ws_data[i][0]] !== undefined) {
                 templateDetailIds.push(mapPrice[ws_data[i][0]].id);
             }
             
