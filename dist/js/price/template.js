@@ -387,7 +387,7 @@ function download() {
             if (mapPrice[ws_data[i][0]] !== undefined) {
                 templateDetailIds.push(mapPrice[ws_data[i][0]].id);
             }
-            
+
         }
     }
     var ws = XLSX.utils.aoa_to_sheet(dlData);
@@ -402,7 +402,18 @@ function download() {
         return buf;
 
     }
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'template-harga.xlsx');
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = dd + '-' + mm + '-' + yyyy;
+
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'template harga ' + mapTemplate[selectedTemplateId].name + ' '+formattedToday+'.xlsx');
 
     data = {};
     data["templateId"] = selectedTemplateId;
