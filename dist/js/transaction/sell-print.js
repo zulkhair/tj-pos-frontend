@@ -38,7 +38,7 @@ $.ajax({
                 transactionDetail = transaction.transactionDetail
 
                 subtotal = 0;
-                for (let index = 0; index < 12; index++) {
+                for (let index = 0; index < 8; index++) {
                     console.log(index);
                     if (index > transactionDetail.length - 1) {
                         tableItem.row.add([

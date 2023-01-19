@@ -1,10 +1,15 @@
+@font-face {
+    font-family: roboto-condensed;
+    src: url(../resource/verdana/verdana.ttf);
+  }
+                
 body {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
     background-color: #FAFAFA;
-    font-family: sans-serif;
+    font-family: roboto-condensed;
 }
 * {
     box-sizing: border-box;
@@ -13,7 +18,7 @@ body {
 .page {
     width: 9.5in;
     min-height: 5.5in;
-    padding: 0.5cm 0.5cm 0 0.5cm;
+    padding: 0 0.5cm 0 0.5cm;
     margin: 0.25cm;
     border: 1px #D3D3D3 solid;
     border-radius: 5px;
@@ -49,8 +54,17 @@ body {
     td {
         vertical-align: top;
     }
+    font-weight: 100;
+    font-size: 11pt;
 }
 
 .faktur-content{
-    font-size: 10pt;
+    th {
+        font-weight: 400;
+    }
+    td {
+        font-size: 14.2pt;
+    }
+    font-size: 11pt;
+    font-weight: 100;
 }
