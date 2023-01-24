@@ -62,7 +62,7 @@ $.ajax({
                     }
                 }
 
-                $('#tanggal').html(transaction.createdTime);
+                $('#tanggal').html(transaction.date);
                 $('#kepada').html(transaction.stakeholderName);
                 $('#nofaktur').html(transaction.code);
                 $('#nopo').html(transaction.referenceCode);
