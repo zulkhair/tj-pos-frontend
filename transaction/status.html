@@ -219,7 +219,7 @@
                                 <div class="col-md-3 offset-md-9">
                                     <button type="button"
                                         class="btn btn-primary col-md-5 offset-md-1" title="Simpan"
-                                        id="btn-save" >Simpan</button>
+                                        id="btn-save"  onclick="submitEdit()">Simpan</button>
                                         <button type="button"
                                         class="btn btn-primary col-md-5" title="Batal"
                                         id="btn-cancel" onclick="second()">Batal</button>
@@ -238,27 +238,32 @@
                                                 <th>Jumlah Jual</th>
                                                 <th>Harga Jual</th>                                                
                                                 <th>Total</th>
-                                                <th style="width: 48px;"></th>
                                             </tr>
                                         </thead>
                                         <tfoot id="detail-data-footer"></tfoot>
-                                    </table>
+                                    </table>  
                                     <table id="table-edit" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Produk</th>
+                                                <th style="width: 200px;">Produk</th>
+                                                <th>Jumlah</th>
                                                 <th>Satuan</th>
-                                                <th>Jumlah Beli</th>
-                                                <th>Harga Beli</th>
-                                                <th>Jumlah Jual</th>
-                                                <th>Harga Jual</th>                                                
-                                                <th>Total Jual</th>
-                                                <th style="width: 48px;"></th>
+                                                <th>Harga Jual</th>      
+                                                <th>Harga Beli</th>                                                                                          
+                                                <th>Total</th>
+                                                <th style="width: 20px;"></th>
                                             </tr>
                                         </thead>
-                                        <tfoot id="detail-data-footer"></tfoot>
-                                    </table>
+                                        <tbody id="product-data-body"></tbody>
+                                        <tfoot id="product-data-footer">
+                                            <tr>
+                                                <td colspan="6" style="text-align: right;">Total Penjualan</td>
+                                                <td style="text-align: right;"><input class="form-control" disabled placeholder="0" id="total-all"/></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>                                  
                                 </div>
                             </div>
                             <div class="col-md-12">

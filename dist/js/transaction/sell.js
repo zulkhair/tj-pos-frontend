@@ -353,7 +353,6 @@ function submit() {
         for (i in dataRow) {
             data = mapData.get(dataRow[i]);
             product = mapProductCodeName.get(data.productCodeName);
-            console.log(data);
             detail.push(
                 {
                     "productId": product.id,
