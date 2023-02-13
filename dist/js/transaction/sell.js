@@ -46,6 +46,7 @@ function initData() {
     initCustomer();
     initProduct();
     addNewRow();
+    changeMasterData();
     $("#total-all").val(0);
 }
 
@@ -60,7 +61,7 @@ function initCustomer() {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                optionhtml = '';
+                optionhtml = '<option disabled selected value> -- pilih salah satu -- </option>';
                 for (i in response.data) {
                     optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + ' | ' + response.data[i].name + '</option>';
                 }
@@ -71,82 +72,88 @@ function initCustomer() {
 }
 
 function initProduct() {
-    arrProduct = [];
-    $.ajax({
-        type: "GET",
-        url: "/api/product/findActive",
-        headers: { "token": token },
-        data: {
-            "active": true
-        },
-        async: false,
-        success: function (response) {
-            if (response.status != 0) {
-                toastr.warning(response.message);
-            } else {
-                for (i in response.data) {
-                    mapProduct.set(response.data[i].id, response.data[i]);
-                    mapProductCodeName.set(response.data[i].code + ' | ' + response.data[i].name, response.data[i])
-                    arrProduct.push(response.data[i]);
-                }
-
-            }
-        }
-    });
-}
-
-function initHarga(productId, index) {
     customerId = $('#customer-select').val();
-
-    if (productId !== "") {
+    if (customerId != null) {
+        arrProduct = [];
         $.ajax({
             type: "GET",
-            url: "/api/customer/find-price",
+            url: "/api/product/findActive",
             headers: { "token": token },
             data: {
-                "productId": productId,
-                "customerId": customerId,
-                "latest": "true",
+                "active": true
             },
             async: false,
             success: function (response) {
                 if (response.status != 0) {
                     toastr.warning(response.message);
                 } else {
-                    if (response.data) {
-                        $("#jual-" + index).val(response.data[0].price.toLocaleString('id'));
-                    } else {
-                        $("#jual-" + index).val(0);
+                    for (i in response.data) {
+                        mapProduct.set(response.data[i].id, response.data[i]);
+                        mapProductCodeName.set(response.data[i].code + ' | ' + response.data[i].name, response.data[i])
+                        arrProduct.push(response.data[i]);
                     }
-                }
-            }
-        });
 
-        $.ajax({
-            type: "GET",
-            url: "/api/supplier/find-price",
-            headers: { "token": token },
-            data: {
-                "productId": productId,
-                "latest": "true",
-            },
-            async: false,
-            success: function (response) {
-                if (response.status != 0) {
-                    toastr.warning(response.message);
-                } else {
-                    if (response.data) {
-                        $("#beli-" + index).val(response.data[0].price.toLocaleString('id'));
-                    } else {
-                        $("#beli-" + index).val(0);
-                    }
                 }
             }
         });
     }
 }
 
+function initHarga(productId, index) {
+    customerId = $('#customer-select').val();
+    if (customerId != null) {
+
+        if (productId !== "") {
+            $.ajax({
+                type: "GET",
+                url: "/api/customer/find-price",
+                headers: { "token": token },
+                data: {
+                    "productId": productId,
+                    "customerId": customerId,
+                    "latest": "true",
+                },
+                async: false,
+                success: function (response) {
+                    if (response.status != 0) {
+                        toastr.warning(response.message);
+                    } else {
+                        if (response.data) {
+                            $("#jual-" + index).val(response.data[0].price.toLocaleString('id'));
+                        } else {
+                            $("#jual-" + index).val(0);
+                        }
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/api/supplier/find-price",
+                headers: { "token": token },
+                data: {
+                    "productId": productId,
+                    "latest": "true",
+                },
+                async: false,
+                success: function (response) {
+                    if (response.status != 0) {
+                        toastr.warning(response.message);
+                    } else {
+                        if (response.data) {
+                            $("#beli-" + index).val(response.data[0].price.toLocaleString('id'));
+                        } else {
+                            $("#beli-" + index).val(0);
+                        }
+                    }
+                }
+            });
+        }
+    }
+}
+
 function changeMasterData() {
+    initProduct();
     index = 0;
     dataRow = [];
     mapData = new Map();
@@ -379,11 +386,12 @@ function submit() {
             contentType: 'application/json',
             async: false,
             success: function (response) {
-                if (response.status != 0) {                    
+                if (response.status != 0) {
                     toastr.warning(response.message);
                 } else {
                     toastr.info(response.message);
                     initData();
+                    $('#nopo').val("");
                     txId = response.data.id;
                     window.open('sell-print.html?trxId=' + txId);
                 }
