@@ -1,5 +1,5 @@
 @font-face {
-  font-family: roboto-condensed;
+  font-family: ver;
   src: url(../resource/verdana/verdana.ttf);
 }
 body {
@@ -8,7 +8,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #FAFAFA;
-  font-family: roboto-condensed;
+  font-family: ver;
 }
 
 * {
@@ -40,7 +40,6 @@ body {
     width: 9.5in;
     height: 5.5in;
   }
-
   .page {
     margin: 0 0 0 0;
     border: initial;
@@ -68,7 +67,7 @@ body {
   font-weight: 400;
 }
 .faktur-content td {
-  font-size: 13pt;
+  font-size: 11pt;
 }
 
 /*# sourceMappingURL=faktur.css.map */

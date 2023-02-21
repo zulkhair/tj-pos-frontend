@@ -1,5 +1,5 @@
 @font-face {
-    font-family: roboto-condensed;
+    font-family: ver;
     src: url(../resource/verdana/verdana.ttf);
   }
                 
@@ -9,7 +9,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #FAFAFA;
-    font-family: roboto-condensed;
+    font-family: ver;
 }
 * {
     box-sizing: border-box;
@@ -63,7 +63,7 @@ body {
         font-weight: 400;
     }
     td {
-        font-size: 13pt;
+        font-size: 11pt;
     }
     font-size: 11pt;
     font-weight: 100;
