@@ -160,10 +160,10 @@ function reloadTable() {
                         totalBuySection = totalBuySection + totalBuy;
                     }
 
-                    total = total + lr;
 
                     next = parseInt(i) + 1
                     if (next == response.data.length || (dateTotal != '' && dateTotal != response.data[next].date)) {
+                        total = total + totalSection;
                         firstDate = true;
                         dateTotal = response.data[i].date;
                         styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
