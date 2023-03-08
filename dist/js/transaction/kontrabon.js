@@ -183,7 +183,7 @@ function initTrx() {
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
                         response.data[i].total.toLocaleString('id'),
-                        '<input type="checkbox" id="checkbox' + response.data[i].id + '">'
+                        '<input type="checkbox" id="checkbox' + i + '">'
                     ]).draw(false);
                     setChkbxListener(i, response.data[i].id, response.data[i]);
                 }
@@ -270,17 +270,14 @@ function initTrxEdit() {
 }
 
 function setChkbxListener(i, id, data) {
-    const checkbox = document.getElementById('checkbox' + id);
-    if (checkbox != undefined) {
-        checkbox.addEventListener('change', (event) => {
-            console.log(id);
-            if (event.currentTarget.checked) {
-                mapSelected.set(id, data);
-            } else {
-                mapSelected.delete(id);
-            }
-        })
-    }
+    const checkbox = document.getElementById('checkbox' + i);
+    checkbox.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            mapSelected.set(id, data);
+        } else {
+            mapSelected.delete(id);
+        }
+    })
 }
 
 function setChkbx1Listener(i, id, data) {
