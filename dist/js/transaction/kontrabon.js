@@ -23,32 +23,44 @@ function init() {
 
     tableTrx = $("#table-trx").DataTable({
         "paging": true,
-        "lengthChange": false,
+        "lengthChange": true,
         "searching": false,
         "ordering": false,
         "info": false,
         "autoWidth": false,
         "responsive": false,
+        "lengthMenu": [
+            [-1, 20, 10],
+            ['All', 20, 10],
+        ],
     });
 
     tableTrxEdit1 = $("#table-trx-edit1").DataTable({
         "paging": true,
-        "lengthChange": false,
+        "lengthChange": true,
         "searching": false,
         "ordering": false,
         "info": false,
         "autoWidth": false,
         "responsive": false,
+        "lengthMenu": [
+            [-1, 20, 10],
+            ['All', 20, 10],
+        ],
     });
 
     tableTrxEdit = $("#table-trx-edit").DataTable({
         "paging": true,
-        "lengthChange": false,
+        "lengthChange": true,
         "searching": false,
         "ordering": false,
         "info": false,
         "autoWidth": false,
         "responsive": false,
+        "lengthMenu": [
+            [-1, 20, 10],
+            ['All', 20, 10],
+        ],
     });
 
     initData();
@@ -122,9 +134,9 @@ function initKontrabon() {
             } else {
                 for (i in response.data) {
                     btnDisabled = response.data[i].status == "CREATED" ? "" : "disabled"
-                    buttonEdit = '<button '+btnDisabled+' type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
+                    buttonEdit = '<button ' + btnDisabled + ' type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
                     buttonPrint = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt " title="Ubah Status ke Lunas" onclick="printKontrabon(\'' + response.data[i].id + '\');"></button>';
-                    buttonLunas = '<button '+btnDisabled+' btnDisabled data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
+                    buttonLunas = '<button ' + btnDisabled + ' btnDisabled data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
                     mapKontrabon.set(response.data[i].id, response.data[i]);
                     tableKontrabon.row.add([
                         response.data[i].code,
@@ -139,8 +151,8 @@ function initKontrabon() {
     });
 }
 
-function printKontrabon(trxId){
-    window.open("kontrabon-print.html?trxId="+trxId)
+function printKontrabon(trxId) {
+    window.open("kontrabon-print.html?trxId=" + trxId)
 }
 
 function initTrx() {
@@ -171,9 +183,8 @@ function initTrx() {
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
                         response.data[i].total.toLocaleString('id'),
-                        '<input type="checkbox" id="checkbox' + i + '">'
+                        '<input type="checkbox" id="checkbox' + response.data[i].id + '">'
                     ]).draw(false);
-
                     setChkbxListener(i, response.data[i].id, response.data[i]);
                 }
             }
@@ -259,14 +270,17 @@ function initTrxEdit() {
 }
 
 function setChkbxListener(i, id, data) {
-    const checkbox = document.getElementById('checkbox' + i);
-    checkbox.addEventListener('change', (event) => {
-        if (event.currentTarget.checked) {
-            mapSelected.set(id, data);
-        } else {
-            mapSelected.delete(id);
-        }
-    })
+    const checkbox = document.getElementById('checkbox' + id);
+    if (checkbox != undefined) {
+        checkbox.addEventListener('change', (event) => {
+            console.log(id);
+            if (event.currentTarget.checked) {
+                mapSelected.set(id, data);
+            } else {
+                mapSelected.delete(id);
+            }
+        })
+    }
 }
 
 function setChkbx1Listener(i, id, data) {

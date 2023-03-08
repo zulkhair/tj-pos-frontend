@@ -25,12 +25,16 @@ function init() {
 
     tableProduct = $("#table-product2").DataTable({
         "paging": true,
-        "lengthChange": false,
-        "searching": true,
+        "lengthChange": true,
+        "searching": false,
         "ordering": false,
         "info": false,
         "autoWidth": false,
         "responsive": false,
+        "lengthMenu": [
+            [-1, 20, 10],
+            ['All', 20, 10],
+        ],
     });
 
     initData();
@@ -209,15 +213,13 @@ function prepareEdit(id) {
 
 function setChkbxListener(i, id, data) {
     const checkbox = document.getElementById('checkbox' + i);
-    if (checkbox != undefined) {
-        checkbox.addEventListener('change', (event) => {
-            if (event.currentTarget.checked) {
-                mapSelected.set(id, data);
-            } else {
-                mapSelected.delete(id);
-            }
-        })
-    }
+    checkbox.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            mapSelected.set(id, data);
+        } else {
+            mapSelected.delete(id);
+        }
+    })
 }
 
 function oneTimeListener(node, type, callback) {
@@ -413,7 +415,7 @@ function download() {
 
     const formattedToday = dd + '-' + mm + '-' + yyyy;
 
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'template harga ' + mapTemplate[selectedTemplateId].name + ' '+formattedToday+'.xlsx');
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'template harga ' + mapTemplate[selectedTemplateId].name + ' ' + formattedToday + '.xlsx');
 
     data = {};
     data["templateId"] = selectedTemplateId;
