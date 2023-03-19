@@ -35,8 +35,8 @@ function init() {
 }
 
 function initData() {
-    $('#startDate').val(startDate());
-    $('#endDate').val(endDate());
+    $('#startDate').val(today());
+    $('#endDate').val(today());
 
     initCustomer();
     reloadTable();

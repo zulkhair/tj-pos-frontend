@@ -128,6 +128,19 @@ function startDate(){
     return startDate;
 }
 
+function today(){
+    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    yyyy = date.getFullYear();
+    mm = date.getMonth() + 1;
+    dd = date.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    startDate = yyyy + '-' + mm + '-' + dd;
+    return startDate;
+}
+
 function endDate(){
     var date = new Date(), y = date.getFullYear(), m = date.getMonth();
     var lastDate = new Date(y, m + 1, 0);
