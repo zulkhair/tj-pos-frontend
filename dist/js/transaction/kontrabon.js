@@ -135,7 +135,7 @@ function initKontrabon() {
                 for (i in response.data) {
                     btnDisabled = response.data[i].status == "CREATED" ? "" : "disabled"
                     buttonEdit = '<button ' + btnDisabled + ' type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
-                    buttonPrint = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt " title="Ubah Status ke Lunas" onclick="printKontrabon(\'' + response.data[i].id + '\');"></button>';
+                    buttonPrint = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt " title="Cetak" onclick="printKontrabon(\'' + response.data[i].id + '\');"></button>';
                     buttonLunas = '<button ' + btnDisabled + ' btnDisabled data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
                     mapKontrabon.set(response.data[i].id, response.data[i]);
                     tableKontrabon.row.add([
