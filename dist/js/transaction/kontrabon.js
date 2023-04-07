@@ -9,6 +9,8 @@ var mapKontrabon = new Map();
 var mapCustomer = new Map();
 var arrData = [];
 var arrDataEdit = [];
+var total1 = 0;
+var total2 = 0;
 
 function init() {
     tableKontrabon = $("#table-kontrabon").DataTable({
@@ -79,6 +81,8 @@ function create() {
     hideTag("first");
     showTag("second");
     hideTag("third");
+    total1 = 0;
+    $('#total1').html(total1.toLocaleString('id'));
 }
 
 function edit() {
@@ -274,8 +278,12 @@ function setChkbxListener(i, id, data) {
     checkbox.addEventListener('change', (event) => {
         if (event.currentTarget.checked) {
             mapSelected.set(id, data);
+            total1 = total1 + data.total;
+            $('#total1').html(total1.toLocaleString('id'));
         } else {
             mapSelected.delete(id);
+            total1 = total1 - data.total;
+            $('#total1').html(total1.toLocaleString('id'));
         }
     })
 }
@@ -437,9 +445,12 @@ function prepareEdit(id) {
 }
 
 function selectAll() {
+    total1 = 0;
     for (i in arrData) {
         mapSelected.set(arrData[i].id, arrData[i]);
         $("#checkbox" + i).prop("checked", true);
+        total1 = total1 + arrData[i].total;
+        $('#total1').html(total1.toLocaleString('id'));
     }
 }
 

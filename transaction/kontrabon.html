@@ -175,6 +175,7 @@
                                 </div>
                                 <hr />
                                 <div class="col-md-2 offset-md-10">
+                                    
                                     <button type="button"
                                         class="btn btn-primary col-md-12 col-sm-12 col-lg-12 col-xl-12" title="Edit"
                                         id="btn-edit" onclick="selectAll()">Select All</button>
@@ -191,6 +192,13 @@
                                                     <th style="width: 20px;"></th>
                                                 </tr>
                                             </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="3" style="text-align:right">Total:</th>
+                                                    <th id="total1"></th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -285,7 +293,7 @@
                                                             <th>Total Transaksi</th>
                                                             <th style="width: 20px;"></th>
                                                         </tr>
-                                                    </thead>
+                                                    </thead>                                                   
                                                 </table>
                                             </div>
                                         </div>
