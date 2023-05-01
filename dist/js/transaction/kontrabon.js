@@ -118,6 +118,9 @@ function initCustomer() {
                     optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + ' | ' + response.data[i].name + '</option>';
                 }
                 $('#customer-select').html(optionhtml);
+
+                option2 = '<option disabled selected value> -- pilih salah satu -- </option>' + optionhtml;
+                $('#customer-select-main').html(option2);
             }
         }
     });
@@ -130,23 +133,34 @@ function initKontrabon() {
     $.ajax({
         type: "GET",
         url: "/api/kontrabon/find",
-        headers: { "token": token },
+        headers: {
+            "token": token
+        },
+        data: {
+            "customerId": $('#customer-select-main').val()
+        },
         async: false,
         success: function (response) {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
+                no = 0;
                 for (i in response.data) {
+                    no = no + 1;
                     btnDisabled = response.data[i].status == "CREATED" ? "" : "disabled"
                     buttonEdit = '<button ' + btnDisabled + ' type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
                     buttonPrint = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt " title="Cetak" onclick="printKontrabon(\'' + response.data[i].id + '\');"></button>';
                     buttonLunas = '<button ' + btnDisabled + ' btnDisabled data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
                     mapKontrabon.set(response.data[i].id, response.data[i]);
                     tableKontrabon.row.add([
+                        no,
+                        mapCustomer.get(response.data[i].customerId).code,
                         response.data[i].code,
-                        response.data[i].createdTime,
-                        response.data[i].status == "CREATED" ? "BELUM DIBAYAR" : "LUNAS",
+                        response.data[i].createdTime,                        
                         response.data[i].total.toLocaleString('id'),
+                        !response.data[i].paymentDate ? "" : response.data[i].paymentDate, 
+                        !response.data[i].totalPayment ? "" : response.data[i].totalPayment.toLocaleString('id'),
+                        response.data[i].status == "CREATED" ? "BELUM DIBAYAR" : "LUNAS",
                         buttonEdit + buttonPrint + buttonLunas
                     ]).draw(false);
                 }
@@ -415,12 +429,27 @@ function removeKontrabon() {
     }
 }
 
+function totBayarChange() {
+    value = $("#total-payment").val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#total-payment").val(harga.toLocaleString('id'));
+}
+
 function submitLunas() {
+    payload = {
+        "kontrabonId": selectedKontrabonId,
+        "paymentDate": $('#payment-date').val(),
+        "totalPayment": parseInt($("#total-payment").val().replaceAll('.', ''))
+    }
+
     $.ajax({
         type: "POST",
         url: "/api/kontrabon/update-lunas",
         headers: { "token": token },
-        data: selectedKontrabonId,
+        data: JSON.stringify(payload),
         contentType: 'application/json',
         async: false,
         success: function (response) {

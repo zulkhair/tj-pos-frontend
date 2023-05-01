@@ -137,6 +137,15 @@
                                     <button type="button"
                                         class="btn btn-primary col-md-12 col-sm-12 col-lg-12 col-xl-12"
                                         title="Submit Transaksi" onclick="create()">Buat Kontrabon</button>
+
+                                </div>
+                                <hr />
+                                <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
+                                    <div class="form-group">
+                                        <label for="customer" class="col-md-2">Customer</label>
+                                        <select class="form-control select2 col-md-7" id="customer-select-main"
+                                            name="customer" placeholder="Customer" onchange="initKontrabon()"></select>
+                                    </div>
                                 </div>
                                 <br />
                                 <div class="col-md-12">
@@ -144,10 +153,14 @@
                                         <table id="table-kontrabon" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>Kode</th>
-                                                    <th>Tanggal Pembuatan</th>
-                                                    <th>Status</th>
-                                                    <th>Total</th>
+                                                    <th>No.</th>
+                                                    <th>Customer</th>
+                                                    <th>No. Kontrabon</th>
+                                                    <th>Tgl. Kontrabon</th>
+                                                    <th>Jml. Kontrabon</th>
+                                                    <th>Tgl. Bayar</th>
+                                                    <th>Tot. Bayar</th>
+                                                    <th>Keterangan</th>
                                                     <th style="width: 150px;"></th>
                                                 </tr>
                                             </thead>
@@ -175,7 +188,6 @@
                                 </div>
                                 <hr />
                                 <div class="col-md-2 offset-md-10">
-                                    
                                     <button type="button"
                                         class="btn btn-primary col-md-12 col-sm-12 col-lg-12 col-xl-12" title="Edit"
                                         id="btn-edit" onclick="selectAll()">Select All</button>
@@ -293,7 +305,7 @@
                                                             <th>Total Transaksi</th>
                                                             <th style="width: 20px;"></th>
                                                         </tr>
-                                                    </thead>                                                   
+                                                    </thead>
                                                 </table>
                                             </div>
                                         </div>
@@ -397,7 +409,15 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah anda yakin untuk mengubah status kontrabon ini ke LUNAS?
+                        <div class="form-group">
+                            <label for="name">Tanggal Bayar</label>
+                            <input type="date" class="form-control" id="payment-date" placeholder="Tanggal Bayar">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Bayar</label>
+                            <input type="text" class="form-control" id="total-payment" placeholder="Total Bayar"
+                                onkeyup="totBayarChange();">
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
