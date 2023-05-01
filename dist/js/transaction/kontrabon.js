@@ -221,6 +221,10 @@ function initTrxEdit() {
     $('#edit-startDate').val(startDate());
     $('#edit-endDate').val(endDate());
 
+    initKontrabonEdit();
+}
+
+function initKontrabonEdit(){
     tableTrxEdit1.clear().draw();
     mapSelected = new Map();
     tableTrxEdit.clear().draw();
@@ -232,8 +236,8 @@ function initTrxEdit() {
         headers: { "token": token },
         data: {
             "txType": "SELL",
-            "startDate": $('#startDate').val(),
-            "endDate": $('#endDate').val(),
+            "startDate": $('#edit-startDate').val(),
+            "endDate": $('#edit-endDate').val(),
             "status": "PEMBUATAN",
             "stakeholderId": customer.id,
         },
