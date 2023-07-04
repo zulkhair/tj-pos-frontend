@@ -291,6 +291,7 @@ function edit() {
         data2 = {
             "productCodeName" : dataRowDetail[i].productCode + ' | ' + dataRowDetail[i].productName,
             "jumlah" : dataRowDetail[i].quantity,
+            "jumlahbeli" : dataRowDetail[i].buyQuantity,
             "jual" : dataRowDetail[i].sellPrice,
             "beli" : dataRowDetail[i].buyPrice,
             "satuan" : dataRowDetail[i].unitCode,
@@ -350,6 +351,7 @@ function reloadTableEdit(indexnew) {
             count,
             getProductInput(index),
             getText("jumlah", index, "number", "0", "", "jumlahChange"),
+            getText("jumlahbeli", index, "number", "0", "", "jumlahBeliChange"),
             getText("satuan", index, "text", "-", "disabled", ""),
             getText("jual", index, "text", "0", "", "jualChange"),
             getText("beli", index, "text", "0", "", "beliChange"),
@@ -361,6 +363,7 @@ function reloadTableEdit(indexnew) {
         if (data2 != undefined) {
             $("#product-select-" + index).val(data2.productCodeName);
             $("#jumlah-" + index).val(data2.jumlah);
+            $("#jumlahbeli-" + index).val(data2.jumlahbeli);
             $("#jual-" + index).val(parseInt(data2.jual).toLocaleString('id'));
             $("#beli-" + index).val(parseInt(data2.beli).toLocaleString('id'));
             $("#satuan-" + index).val(data2.satuan);
@@ -371,6 +374,7 @@ function reloadTableEdit(indexnew) {
 
         var product = document.getElementById("product-select-" + index);
         var jumlah = document.getElementById("jumlah-" + index);
+        var jumlahbeli = document.getElementById("jumlahbeli-" + index);
         var jual = document.getElementById("jual-" + index);
         var beli = document.getElementById("beli-" + index);
 
@@ -384,6 +388,15 @@ function reloadTableEdit(indexnew) {
         });
 
         jumlah.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+
+                addNewRow();
+            }
+        });
+
+        jumlahbeli.addEventListener("keypress", function (event) {
             if (event.key === "Enter") {
                 // Cancel the default action, if needed
                 event.preventDefault();
@@ -457,6 +470,16 @@ function jumlahChange(index) {
     sumTotal();
 }
 
+function jumlahBeliChange(index) {
+    value = $("#jumlahbeli-" + index).val();
+    if (value == "" || value == undefined) {
+        value = "0"
+    }
+    jumlahBeli = parseFloat(value);
+
+    setMapData(index);
+}
+
 function jualChange(index) {
     value = $("#jual-" + index).val();
     if (value == "" || value == undefined) {
@@ -486,6 +509,7 @@ function setMapData(index) {
     data2 = mapData.get(index);
     data2.productCodeName = $("#product-select-" + index).val();
     data2.jumlah = $("#jumlah-" + index).val();
+    data2.jumlahbeli = $("#jumlahbeli-" + index).val();
     data2.jual = $("#jual-" + index).val().replaceAll('.', '');
     data2.beli = $("#beli-" + index).val().replaceAll('.', '');
     data2.satuan = $("#satuan-" + index).val();
@@ -586,6 +610,7 @@ function submitEdit(){
                     "buyPrice": parseInt(data.beli),
                     "sellPrice": parseInt(data.jual),
                     "quantity": parseFloat(data.jumlah),
+                    "buyQuantity": parseFloat(data.jumlahbeli),
                 }
             )
         }
