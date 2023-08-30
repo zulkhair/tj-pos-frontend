@@ -161,7 +161,7 @@ function reloadTable() {
                                 '<p style="' + stylerow + 'padding:12px;margin:0">' + code + '</p>',
                                 '<p style="' + stylerow + 'padding:12px;margin:0">' + nopo + '</p>',
                                 '<p style="' + stylerow + 'padding:12px;margin:0">' + stats + '</p>',
-                                '<p style="' + stylerow + 'padding:12px;margin:0">' + item3.productCode + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + item3.productName + '</p>',
                                 '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyQuantity).toLocaleString('id') + '</p>',
                                 priceColumn,
                                 '<p style="' + stylerow + 'padding:12px;margin:0">' + (totalBuy).toLocaleString('id') + '</p>',
