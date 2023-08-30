@@ -3,8 +3,25 @@ var tableTrx;
 var tableDetail;
 var selectedTrxId;
 var ws_data = [];
+var edit = false;
+var selectedTrxId;
+var selectedRow;
 
-function init() {
+function initReport() {
+    $.ajax({
+        type: "GET",
+        url: "/api/auth/check",
+        headers: { "token": token },
+        data: { "permission": "web:transaction:report:updatebuyprice" },
+        success: function (response) {
+            if (response.status != 0) {
+                edit = false;
+            } else {
+                edit = true;
+            }
+        }
+    });
+
     tableTrx = $("#table-trx").DataTable({
         "paging": false,
         "lengthChange": false,
@@ -32,6 +49,10 @@ function init() {
     $('.select2').select2()
 
     initData();
+
+    $('#edit-beli-modal').on('shown.bs.modal', function () {
+        $(this).find('#harga-beli-edit').focus();
+    })
 }
 
 function initData() {
@@ -73,149 +94,159 @@ function reloadTable() {
     customerId = $('#customer-select').val();
     stats = $('#status-select').val();
 
+    $('#loading').show();
+
     $.ajax({
         type: "GET",
-        url: "/api/transaction/find",
+        url: "/api/transaction/report",
         headers: { "token": token },
         data: {
-            "txType": "SELL",
             "startDate": $('#startDate').val(),
             "endDate": $('#endDate').val(),
             "status": stats,
             "stakeholderId": customerId
         },
-        async: false,
         success: function (response) {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
                 total = 0;
                 totalSection = 0;
-                dateTotal = '';
-                firstTotal = true;
-                firstDate = true;
                 totalSellSection = 0;
                 totalBuySection = 0;
-                for (i in response.data) {
-                    details = response.data[i].transactionDetail;
-                    first = true;
+                count = 0;
+                var textLoading = $('#loading-text');
+                $.each(response.data, function (index, item) {
 
-                    if (firstTotal) {
-                        dateTotal = response.data[i].date;
-                        firstTotal = false;
-                    }
+                    date = item.date
+                    reports = item.reports;
 
-                    for (j in details) {
-                        code = '';
-                        nopo = '';
-                        stats = '';
+                    $.each(reports, function (index2, item2) {
+                        details = item2.reportDetails
+                        code = item2.code;
+                        nopo = item2.referenceCode;
+                        stats = item2.status;
+                        // stylerow = 'background-color: rgba(0,0,0,.05);'
                         stylerow = '';
-                        if (first) {
-                            code = response.data[i].code;
-                            nopo = response.data[i].referenceCode;
-                            stats = response.data[i].status;
-                            // stylerow = 'background-color: rgba(0,0,0,.05);'
-                            first = false;
-                        }
 
-                        if (firstDate) {
-                            date = response.data[i].date;
-                            firstDate = false;
-                        } else {
+                        $.each(details, function (index3, item3) {
+                            mapTrx.set(item3.id, {
+                                "code": item2.code,
+                                "productCode": item3.productCode,
+                                "productName": item3.productName,
+                                "buyPrice": item3.buyPrice,
+                            })
+                            quantity = item3.quantity;
+                            buyQuantity = item3.buyQuantity;
+                            buyPrice = item3.buyPrice;
+                            totalBuy = buyQuantity * buyPrice;
+                            sellPrice = item3.sellPrice;
+                            totalSell = quantity * sellPrice;
+                            lr = totalSell - totalBuy;
+                            style = ''
+                            if (lr < 0) {
+                                style = 'class="bgred"'
+                            }
+
+                            ws_data.push([date, code, nopo, stats, item3.productCode, (buyQuantity).toLocaleString('id'), (buyPrice).toLocaleString('id'),
+                                (totalBuy).toLocaleString('id'), (quantity).toLocaleString('id'), (sellPrice).toLocaleString('id'), (totalSell).toLocaleString('id'),
+                                (lr).toLocaleString('id')]);
+
+                            priceColumn = '<a href="#" data-toggle="modal" data-target="#edit-beli-modal" onclick="prepareEdit(\'' + item3.id + '\', ' + count + ');"><p style="' + stylerow + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p></a>';
+                            if (!edit) {
+                                priceColumn = '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p>';
+                            }
+                            tableTrx.row.add([
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + date + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + code + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + nopo + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + stats + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + item3.productCode + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyQuantity).toLocaleString('id') + '</p>',
+                                priceColumn,
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + (totalBuy).toLocaleString('id') + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + (quantity).toLocaleString('id') + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + (sellPrice).toLocaleString('id') + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0">' + (totalSell).toLocaleString('id') + '</p>',
+                                '<p style="' + stylerow + 'padding:12px;margin:0" ' + style + '>' + (lr).toLocaleString('id') + '</p>'
+                            ]).draw(false);
+
+                            totalSection = totalSection + lr;
+                            totalSellSection = totalSellSection + totalSell;
+                            totalBuySection = totalBuySection + totalBuy;
+
+                            code = '';
+                            nopo = '';
+                            stats = '';
+                            stylerow = '';
                             date = '';
-                        }
+                            count++;
 
-                        quantity = details[j].quantity;
-                        buyQuantity = details[j].buyQuantity;
-                        buyPrice = details[j].buyPrice;
-                        totalBuy = buyQuantity * buyPrice;
-                        sellPrice = details[j].sellPrice;
-                        totalSell = quantity * sellPrice;
-                        lr = totalSell - totalBuy;
-                        style = ''
-                        if (lr < 0) {
-                            style = 'class="bgred"'
-                        }
+                            // textLoading.html('<p><span>Menyiapkan ' + count + ' dari 100 data</span></p>');
 
-                        ws_data.push([date, code, nopo, stats, details[j].productCode, (buyQuantity).toLocaleString('id'), (buyPrice).toLocaleString('id'), 
-                        (totalBuy).toLocaleString('id'), (quantity).toLocaleString('id'), (sellPrice).toLocaleString('id'), (totalSell).toLocaleString('id'), 
-                        (lr).toLocaleString('id')]);
-                        tableTrx.row.add([
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + date + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + code + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + nopo + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + stats + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + details[j].productCode + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyQuantity).toLocaleString('id') + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + (totalBuy).toLocaleString('id') + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + (quantity).toLocaleString('id') + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + (sellPrice).toLocaleString('id') + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0">' + (totalSell).toLocaleString('id') + '</p>',
-                            '<p style="' + stylerow + 'padding:12px;margin:0" ' + style + '>' + (lr).toLocaleString('id') + '</p>'
-                        ]).draw(false);
+                            // setInterval(function(){
+                            //     console.log(count);
+                            //    
+                            // },1000);
+                        });
+                    });
 
-                        totalSection = totalSection + lr;
-                        totalSellSection = totalSellSection + totalSell;
-                        totalBuySection = totalBuySection + totalBuy;
-                    }
+                    total = total + totalSection;
+                    total = total + totalSection;
+                    firstDate = true;
+                    dateTotal = response.data[i].date;
+                    total = total + totalSection;
+                    firstDate = true;
+                    dateTotal = response.data[i].date;
+                    styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
 
-
-                    next = parseInt(i) + 1
-                    if (next == response.data.length || (dateTotal != '' && dateTotal != response.data[next].date)) {
-                        total = total + totalSection;
-                        firstDate = true;
-                        dateTotal = response.data[i].date;
-                        styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
-
-                        ws_data.push(['', '', '', '', '', '', '', 
-                        (totalBuySection).toLocaleString('id'), '', '', (totalSellSection).toLocaleString('id'), 
+                    ws_data.push(['', '', '', '', '', '', '',
+                        (totalBuySection).toLocaleString('id'), '', '', (totalSellSection).toLocaleString('id'),
                         (totalSection).toLocaleString('id')]);
-                        tableTrx.row.add([
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalBuySection).toLocaleString('id') + '</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSellSection).toLocaleString('id') + '</p>',
-                            '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSection).toLocaleString('id') + '</p>'
-                        ]).draw(false);
+                    tableTrx.row.add([
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalBuySection).toLocaleString('id') + '</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSellSection).toLocaleString('id') + '</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSection).toLocaleString('id') + '</p>'
+                    ]).draw(false);
 
-                        ws_data.push(['', '', '', '', '', '', '', 
-                        '', '', '', '', 
+                    ws_data.push(['', '', '', '', '', '', '',
+                        '', '', '', '',
                         '']);
-                        tableTrx.row.add([
-                            '<p style="padding:0;margin:0">&nbsp;</p>',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            ''
-                        ]).draw(false);
+                    tableTrx.row.add([
+                        '<p style="padding:0;margin:0">&nbsp;</p>',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                    ]).draw(false);
 
-                        totalSection = 0;
-                        totalSellSection = 0;
-                        totalBuySection = 0;
-                    }
-
-                }
-                ws_data.push(['', '', '', '', '', '', '', 
-                        '', '', '', 'Total', 
-                        total.toLocaleString('id')]);
+                    totalSection = 0;
+                    totalSellSection = 0;
+                    totalBuySection = 0;
+                });
+                ws_data.push(['', '', '', '', '', '', '',
+                    '', '', '', 'Total',
+                    total.toLocaleString('id')]);
                 styleTotal = total <= 0 ? 'class="bgred"' : '';
                 $('#total').html('<p style="margin:0;padding:12px;" ' + styleTotal + '>' + total.toLocaleString('id') + '</p>');
             }
+            $('#loading').hide();
         }
     });
 }
@@ -245,4 +276,64 @@ function download() {
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'laporan.xlsx');
 }
 
-init();
+function prepareEdit(id, row) {
+    selectedRow = row;
+    selectedTrxId = id;
+
+    $("#no-faktur-edit").val(mapTrx.get(selectedTrxId).code);
+    $("#kode-produk-edit").val(mapTrx.get(selectedTrxId).productCode);
+    $("#nama-produk-edit").val(mapTrx.get(selectedTrxId).productName);
+    $("#harga-beli-edit").val(mapTrx.get(selectedTrxId).buyPrice);
+
+    hargaBeliChange();
+    document.getElementById("harga-beli-edit").focus();
+}
+
+function editHargaBeli() {
+    value = $("#harga-beli-edit").val();
+    if (value == "" || value == undefined) {
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    data = {
+        "transactionDetailId": selectedTrxId,
+        "buyPrice": harga,
+    }
+
+    stylerow = '';
+    priceColumn = '<a href="#" data-toggle="modal" data-target="#edit-beli-modal" onclick="prepareEdit(\'' + selectedTrxId + '\', ' + selectedRow + ');"><p style="' + stylerow + 'padding:12px;margin:0">' + (harga).toLocaleString('id') + '</p></a>';
+    if (!edit) {
+        priceColumn = '<p style="' + stylerow + 'padding:12px;margin:0">' + (harga).toLocaleString('id') + '</p>';
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/api/transaction/updateHargaBeli",
+        headers: { "token": token },
+        data: JSON.stringify(data),
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                toastr.info(response.message);
+                $("#table-trx tr:nth-child(" + (selectedRow + 1) + ") td:nth-child(" + 7 + ")").html(priceColumn);
+                mapTrx.get(selectedTrxId).buyPrice = harga;
+                selectedProductId = ""
+                selectedRow = -1;
+            }
+        }
+    });
+
+}
+
+function hargaBeliChange() {
+    value = $("#harga-beli-edit").val();
+    if (value == "" || value == undefined) {
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#harga-beli-edit").val(harga.toLocaleString('id'));
+}
+
+initReport();

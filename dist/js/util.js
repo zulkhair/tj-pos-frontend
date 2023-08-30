@@ -1,4 +1,4 @@
-function init() {
+function initLoading() {
     $(window).on('load', function () {
         $('#loading').hide();
     })
@@ -90,7 +90,7 @@ function redirectToLogin() {
     window.location.replace("/login.html");
 }
 
-init();
+initLoading();
 
 function clearInput(inputId) {
     document.getElementById(inputId).value = ''
@@ -114,7 +114,7 @@ function disableTag(id) {
     $('#' + id).attr("disabled", "disabled");
 }
 
-function startDate(){
+function startDate() {
     var date = new Date(), y = date.getFullYear(), m = date.getMonth();
     var startDate = new Date(y, m, 1);
     yyyy = startDate.getFullYear();
@@ -128,7 +128,7 @@ function startDate(){
     return startDate;
 }
 
-function today(){
+function today() {
     var date = new Date(), y = date.getFullYear(), m = date.getMonth();
     yyyy = date.getFullYear();
     mm = date.getMonth() + 1;
@@ -141,7 +141,7 @@ function today(){
     return startDate;
 }
 
-function endDate(){
+function endDate() {
     var date = new Date(), y = date.getFullYear(), m = date.getMonth();
     var lastDate = new Date(y, m + 1, 0);
     yyyy = lastDate.getFullYear();
@@ -163,7 +163,19 @@ function oneTimeListener(node, type, callback) {
         e.target.removeEventListener(e.type, listener);
 
         // call handler with original context 
-        return callback.call(this, e); 
+        return callback.call(this, e);
 
     });
+}
+
+// Function to show the loading indicator
+function showLoadingIndicator() {
+    const loadingIndicator = document.getElementById("loading");
+    loadingIndicator.style.display = "block";
+}
+
+// Function to hide the loading indicator
+function hideLoadingIndicator() {
+    const loadingIndicator = document.getElementById("loading");
+    loadingIndicator.style.display = "none";
 }

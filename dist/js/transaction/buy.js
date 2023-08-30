@@ -2,16 +2,50 @@ var mapProduct = {};
 var mapUnit = {};
 var dataRow = [];
 var mapProductVal = {};
+var tableTrx;
+var tableTrxDetail;
+var selectedTrxId;
+var mapTrx = new Map();
+var mapTrxDetail = new Map();
+var mapSupplier = new Map();
+var selectedTrxDetailId;
 
-function init() {
+function initBuy() {
     mapProduct = {};
     mapUnit = {};
     dataRow = [];
     mapProductVal = {};
 
+    tableTrx = $("#table-trx").DataTable({
+        "paging": false,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": false,
+        "info": false,
+        "autoWidth": false,
+        "responsive": true,
+    });
+
+    tableTrxDetail = $("#table-trx-detail").DataTable({
+        "paging": false,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": false,
+        "info": false,
+        "autoWidth": false,
+        "responsive": true,
+    });
+
+    $('#startDate').val(today());
+    $('#endDate').val(today());
+    $('#table-trx-detail').hide();
+    $('#btn-kembali').hide();
+    $('#nofakturlbl').hide();
+    $('#customerlbl').hide();
+    $('#nofaktur').hide();
+    $('#customer').hide();
+
     initSupplier();
-    initUnit();
-    initProduct();
     reloadTable();
 }
 
@@ -26,8 +60,9 @@ function initSupplier() {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                optionhtml = '';
+                optionhtml = '<option value="">-Pilih Supplier-</option>';
                 for (i in response.data) {
+                    mapSupplier.set(response.data[i].id, response.data[i])
                     optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + ' | ' + response.data[i].name + '</option>';
                 }
                 $('#supplier-select').html(optionhtml);
@@ -36,194 +71,171 @@ function initSupplier() {
     });
 }
 
-function initUnit() {
-    $.ajax({
-        type: "GET",
-        url: "/api/unit/find",
-        headers: { "token": token },
-        data: { "active": true },
-        async: false,
-        success: function (response) {
-            if (response.status != 0) {
-                toastr.warning(response.message);
-            } else {
-                optionhtml = '';
-                for (i in response.data) {
-                    mapUnit[response.data[i].id] = response.data[i]
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + '</option>';
-                }
-                $('#unit-select').html(optionhtml);
-            }
-        }
-    });
-}
+function reloadTable() {
+    tableTrx.clear().draw();
+    mapTrx = new Map();
 
-function initProduct() {
+    $('#loading').show();
+
     $.ajax({
         type: "GET",
-        url: "/api/product/find",
+        url: "/api/transaction/findTrxBuy",
         headers: { "token": token },
         data: {
-            "active": true
+            "startDate": $('#startDate').val(),
+            "endDate": $('#endDate').val(),
         },
-        async: false,
         success: function (response) {
             if (response.status != 0) {
                 toastr.warning(response.message);
             } else {
-                optionhtml = '';
-                for (i in response.data) {
-                    mapProduct[response.data[i].id] = response.data[i]
-                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].code + " (" + response.data[i].name + ")" + '</option>';
-                }
-                $('#product-select').html(optionhtml);
+                $.each(response.data, function (index, item) {
+                    mapTrx.set(item.id, item);
+                    tableTrx.row.add([
+                        item.code,
+                        item.customerCode,
+                        item.date,
+                        '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-search " title="View Detail" onclick="viewdetail(\'' + item.id + '\');">'
+                    ]).draw(false);
 
+
+                });
             }
+            $('#loading').hide();
+        }
+    });
+
+}
+
+function viewdetail(id) {
+    tableTrxDetail.clear().draw();
+
+    $('#table-trx-detail').show();
+    $('#btn-kembali').show();
+    $('#table-trx').hide();
+    $('#nofakturlbl').show();
+    $('#customerlbl').show();
+    $('#nofaktur').show();
+    $('#customer').show();
+    $('#startDatelbl').hide();
+    $('#endDatelbl').hide();
+    $('#startDate').hide();
+    $('#endDate').hide();
+
+    $('#nofaktur').val(mapTrx.get(id).code);
+    $('#customer').val(mapTrx.get(id).customerName);
+
+    selectedTrxId = id;
+    mapTrxDetail = new Map();
+
+    $('#loading').show();
+
+    $.ajax({
+        type: "GET",
+        url: "/api/transaction/findTrxBuyDetail",
+        headers: { "token": token },
+        data: {
+            "transactionId": selectedTrxId,
+        },
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                
+
+                $.each(response.data, function (index, item) {
+                    supplierCode = "-";
+                    if (mapSupplier.get(item.supplierId) != undefined) {
+                        supplierCode = mapSupplier.get(item.supplierId).code
+                    }
+
+                    mapTrxDetail.set(item.id, item)
+                    tableTrxDetail.row.add([
+                        item.productName,
+                        supplierCode,
+                        item.quantity,
+                        item.price,
+                        item.paymentMethod == "" ? "-" : item.paymentMethod,
+                        '<button data-toggle="modal" data-target="#submit-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit" onclick="prepareEdit(\'' + item.id + '\');">'
+                    ]).draw(false);
+                });
+            }
+            $('#loading').hide();
         }
     });
 }
 
-function initHarga() {
-    unitId = $('#unit-select').val();
-    date = $('#date').val();
-    productId = $('#product-select').val();
-    supplierId = $('#supplier-select').val();
-
-    if (unitId !== "" && date !== "" && productId !== "") {
-        $.ajax({
-            type: "GET",
-            url: "/api/supplier/buy-price",
-            headers: { "token": token },
-            data: {
-                "unitId": unitId,
-                "date": date,
-                "productId": productId,
-                "supplierId": supplierId,
-            },
-            async: false,
-            success: function (response) {
-                if (response.status != 0) {
-                    toastr.warning(response.message);
-                } else {
-                    if (response.data) {
-                        $("#price").val(response.data[0].price);
-                    } else {
-                        $("#price").val(0);
-                    }
-                }
-            }
-        });
-    }
-}
-
-function changeMasterData() {
-    dataRow = [];
-    mapProductVal = {};
+function back() {
     reloadTable();
-    initHarga();
+    $('#table-trx-detail').hide();
+    $('#btn-kembali').hide();
+    $('#table-trx').show();
+    $('#nofakturlbl').hide();
+    $('#customerlbl').hide();
+    $('#nofaktur').hide();
+    $('#customer').hide();
+    $('#startDatelbl').show();
+    $('#endDatelbl').show();
+    $('#startDate').show();
+    $('#endDate').show();
 }
 
+function prepareEdit(id) {
+    selectedTrxDetailId = id;
+    initSupplier();
 
-function addRow() {
-    prodId = $('#product-select').val()
-    unitId = $('#unit-select').val()
-    productId = mapProductVal[$('#product-select').val()];
+    $("#produk-sub").val(mapTrxDetail.get(id).productName);
+    $("#harga-sub").val(mapTrxDetail.get(id).price.toLocaleString('id'));
+    $("#jumlah-sub").val(mapTrxDetail.get(id).quantity.toLocaleString('id'));
 
-    if (productId !== undefined) {
-        toastr.warning("Data produk dengan kode '" + mapProduct[productId].code + "' sudah ada");
-    } else if ($("#price").val() == 0) {
-        toastr.warning("Harga produk dengan kode '" + mapProduct[prodId].code + "' dengan satuan " + mapUnit[unitId].code + " di tanggal " + $('#date').val() + " belum ditambahkan");
-    } else {
-        mapProductVal[prodId] = prodId
-        dataRow.push(
-            {
-                "productId": prodId,
-                "unitId": unitId,
-                "price": parseInt($("#price").val()),
-                "quantity": parseInt($("#quantity").val()),
-            }
-        )
-
-        reloadTable();
-    }
-
-
-    $("#quantity").val("");
-}
-
-function removeRow(index) {
-    dataRow.splice(index, 1);
-    reloadTable();
-}
-
-function reloadTable() {
-    total = 0;
-    html = '';
-    for (i in dataRow) {
-        html += '<tr>';
-        html += '<td>' + mapProduct[dataRow[i].productId].code + " (" + mapProduct[dataRow[i].productId].name + ")" + '</td>';
-        html += '<td>' + mapUnit[dataRow[i].unitId].code + '</td>';
-        html += '<td class="numeric">' + dataRow[i].price + '</td>';
-        html += '<td class="numeric">' + dataRow[i].quantity + '</td>';
-        html += '<td class="numeric">' + (dataRow[i].price * dataRow[i].quantity) + '</td>';
-        html += '<td><button type="button" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus" onclick="removeRow(' + i + ');"></button>';
-        html += '</tr>';
-
-        total = total + (dataRow[i].price * dataRow[i].quantity)
-    }
-
-    $('#product-data-body').html(html);
-
-    footer = '<tr><td colspan="4"><strong>Total</strong></td><td class="numeric"><strong>' + total + '</strong></td><td></td></tr>';
-    $('#product-data-footer').html(footer)
 }
 
 function submit() {
 
-    if (dataRow.length == 0) {
-        toastr.warning("Harap tambahkan produk pada transaksi yang akan dibuat");
-    } else {
-        transaction = {
-            "stakeholderId": $('#supplier-select').val(),
-            "date": $('#date').val(),
-            "transactionType": "BUY",
-            "referenceCode": $('#refference').val(),
-            "transactionDetail": dataRow,
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/api/transaction/create",
-            headers: { "token": token },
-            data: JSON.stringify(transaction),
-            contentType: 'application/json',
-            async: false,
-            success: function (response) {
-                if (response.status != 0) {
-                    toastr.warning(response.message);
-                } else {
-                    toastr.info(response.message);
-                    init();
-                }
-            }
-        });
+    transaction = {
+        "transactionDetailId": selectedTrxDetailId,
+        "supplierId": $('#supplier-select').val(),
+        "quantity": parseInt($('#jumlah-sub').val().replaceAll('.', '')),
+        "price": parseInt($('#harga-sub').val().replaceAll('.', '')),
+        "paymentMethod": $('#pembayaran-select').val(),
     }
 
-
+    $.ajax({
+        type: "POST",
+        url: "/api/transaction/insertTransactionBuy",
+        headers: { "token": token },
+        data: JSON.stringify(transaction),
+        contentType: 'application/json',
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                toastr.info(response.message);
+                viewdetail(selectedTrxId);
+            }
+        }
+    });
 }
 
 
-init();
-$('.select2').select2()
+function hargaChange() {
+    value = $("#harga-sub").val();
+    if (value == "" || value == undefined) {
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#harga-sub").val(harga.toLocaleString('id'));
+}
 
-$(function () {
-    $("#table-product").DataTable({
-        "paging": false,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": false,
-        "info": false,
-        "autoWidth": false,
-        "responsive": false,
-    });
-});
+function jumlahChange() {
+    value = $("#jumlah-sub").val();
+    if (value == "" || value == undefined) {
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#jumlah-sub").val(harga.toLocaleString('id'));
+}
+
+initBuy();
+$('.select2').select2()

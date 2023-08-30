@@ -37,6 +37,8 @@
         <div id="loading-image" class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
         </div>
+        <div id="loading-text">
+        </div>
     </div>
     <div class="wrapper">
 
@@ -132,7 +134,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">                           
+                            <div class="col-md-12 col-sm-12 col-lg-12 col-xl-6">
                                 <div class="form-group">
                                     <label for="datetime" class="col-md-3">Tanggal Awal</label>
                                     <input type="date" class="form-control col-md-7 inline-block" id="startDate"
@@ -158,34 +160,61 @@
                                         <option value="DIBAYAR">DIBAYAR</option>
                                     </select>
                                 </div>
-                            </div>                           
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <table id="table-trx" class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th><p style="margin:0;padding:12px;">Tanggal</p></th>
-                                                <th><p style="margin:0;padding:12px;">No Faktur</p></th>
-                                                <th><p style="margin:0;padding:12px;">No PO</p></th>     
-                                                <th><p style="margin:0;padding:12px;">Status</p></th>                                                
-                                                <th><p style="margin:0;padding:12px;">Produk</p></th>
-                                                <th><p style="margin:0;padding:12px;">Jumlah Beli</p></th>
-                                                <th><p style="margin:0;padding:12px;">Harga Beli</p></th>
-                                                <th><p style="margin:0;padding:12px;">Total Beli</p></th>  
-                                                <th><p style="margin:0;padding:12px;">Jumlah Jual</p></th>
-                                                <th><p style="margin:0;padding:12px;">Harga Jual</p></th>
-                                                <th><p style="margin:0;padding:12px;">Total Jual</p></th>                                                                                                    
-                                                <th><p style="margin:0;padding:12px;">L/R</p></th>                       
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Tanggal</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">No Faktur</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">No PO</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Status</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Produk</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Jumlah Beli</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Harga Beli</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Total Beli</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Jumlah Jual</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Harga Jual</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">Total Jual</p>
+                                                </th>
+                                                <th>
+                                                    <p style="margin:0;padding:12px;">L/R</p>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="11" style="text-align:right"><p style="margin:0;padding:12px;">Total</p></th>
+                                                <th colspan="11" style="text-align:right">
+                                                    <p style="margin:0;padding:12px;">Total</p>
+                                                </th>
                                                 <th id="total"></th>
                                             </tr>
                                         </tfoot>
                                     </table>
-                                    <button id="download-btn" type="button" class="btn btn-primary" onclick="download()">Download</button>
+                                    <button id="download-btn" type="button" class="btn btn-primary"
+                                        onclick="download()">Download</button>
                                 </div>
                             </div>
                         </div>
@@ -198,22 +227,37 @@
         </div>
         <!-- /.content-wrapper -->
 
-        <div class="modal fade" id="submit-modal">
+        <div class="modal fade" id="edit-beli-modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Submit Transaksi</h4>
+                        <h4 class="modal-title">Edit Harga Beli</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah anda yakin untuk memperbarui status transaksi ini?
+                        <div class="form-group">
+                            <label>No Faktur</label>
+                            <input type="text" class="form-control" id="no-faktur-edit" placeholder="No Faktur" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Kode Produk</label>
+                            <input type="text" class="form-control" id="kode-produk-edit" placeholder="Kode Produk" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Produk</label>
+                            <input type="text" class="form-control" id="nama-produk-edit" placeholder="Nama Produk" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Beli</label>
+                            <input type="text" class="form-control" id="harga-beli-edit" placeholder="Harga Beli" onkeyup="hargaBeliChange();">
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                            onclick="updateStatus()">Ya</button>
+                            onclick="editHargaBeli()">Ya</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->

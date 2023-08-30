@@ -10,6 +10,12 @@
   opacity: 0.7;
   background-color: #fff;
   z-index: 2000;
+
+  p {
+    font-size: 16px;
+    margin-top: 16px;
+    margin-left: 16px;
+  }
 }
 
 #loading-image {
@@ -20,20 +26,24 @@
   .navbar-role {
     float: left;
     margin-right: 12px;
+
     #navbar-name {
       display: block;
     }
+
     #navbar-role-name {
       display: block;
       font-size: 13px;
     }
   }
+
   .navbar-image {
     width: 46px;
     height: 46px;
     float: left;
     background: #f4f6f9;
     border-radius: 50px;
+
     i {
       font-size: 30px;
       padding-left: 9px;
@@ -58,49 +68,49 @@
   overflow: auto;
 }
 
-.td-edit{
+.td-edit {
   background-color: rgba(255, 220, 40, 0.15);
   border-color: #f4f6f9 !important;
 }
 
-.numeric{
+.numeric {
   text-align: right;
 }
 
-.pad0{
+.pad0 {
   padding: 0 !important;
 }
 
-.numericpad0{
+.numericpad0 {
   text-align: right;
   padding: 0 !important;
 }
 
-.numericpad0leftBold{
+.numericpad0leftBold {
   text-align: right;
   padding: 0 !important;
   border-left: 3px solid !important;
 }
 
-.bgred{
+.bgred {
   background-color: red;
 }
 
-.bggreen{
+.bggreen {
   background-color: green;
 }
 
-.numericTablePrint{
+.numericTablePrint {
   text-align: right;
   height: 18px;
 }
 
-.centerTablePrint{
+.centerTablePrint {
   text-align: center;
   height: 18px;
 }
 
-.numericTablePrintBorderBot{
+.numericTablePrintBorderBot {
   text-align: right;
   height: 18px;
   font-size: 10pt;
@@ -108,19 +118,19 @@
   padding-right: 4px;
 }
 
-.centerTablePrintBorderBot{
+.centerTablePrintBorderBot {
   text-align: center;
   height: 18px;
   font-size: 10pt;
   border-bottom: solid thin;
 }
 
-.leftTablePrint{
+.leftTablePrint {
   text-align: left;
   height: 18px;
 }
 
-.rightTablePrint{
+.rightTablePrint {
   text-align: right;
   height: 18px;
 }
