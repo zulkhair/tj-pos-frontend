@@ -60,7 +60,29 @@ function initData() {
     $('#endDate').val(today());
 
     initCustomer();
+    initProduct();
     reloadTable();
+}
+
+function initProduct() {
+    $.ajax({
+        type: "GET",
+        url: "/api/product/findActive",
+        headers: { "token": token },
+        data: { "active": true },
+        async: false,
+        success: function (response) {
+            if (response.status != 0) {
+                toastr.warning(response.message);
+            } else {
+                optionhtml = '<option value="">-Pilih Produk-</option>';
+                for (i in response.data) {
+                    optionhtml = optionhtml + '<option value="' + response.data[i].id + '">' + response.data[i].name + '</option>';
+                }
+                $('#product-select').html(optionhtml);
+            }
+        }
+    });
 }
 
 function initCustomer() {
@@ -92,6 +114,7 @@ function reloadTable() {
     ws_data.push(['Tanggal', 'No Faktur', 'No PO', 'Status', 'Produk', 'Jumlah Beli', 'Harga Beli', 'Total Beli', 'Jumlah Jual', 'Harga Jual', 'Total Jual', 'L/R']);
 
     customerId = $('#customer-select').val();
+    productId = $('#product-select').val();
     stats = $('#status-select').val();
 
     $('#loading').show();
@@ -104,7 +127,8 @@ function reloadTable() {
             "startDate": $('#startDate').val(),
             "endDate": $('#endDate').val(),
             "status": stats,
-            "stakeholderId": customerId
+            "stakeholderId": customerId,
+            "productId": productId
         },
         success: function (response) {
             if (response.status != 0) {
@@ -114,6 +138,12 @@ function reloadTable() {
                 totalSection = 0;
                 totalSellSection = 0;
                 totalBuySection = 0;
+
+                totalCountSellSection = 0;
+                totalCountBuySection = 0;
+                totalCountSell = 0;
+                totalCountBuy = 0;
+
                 count = 0;
                 var textLoading = $('#loading-text');
                 $.each(response.data, function (index, item) {
@@ -148,7 +178,7 @@ function reloadTable() {
                                 style = 'class="bgred"'
                             }
 
-                            ws_data.push([date, code, nopo, stats, item3.productCode, (buyQuantity).toLocaleString('id'), (buyPrice).toLocaleString('id'),
+                            ws_data.push([date, code, nopo, stats, item3.productName, (buyQuantity).toLocaleString('id'), (buyPrice).toLocaleString('id'),
                                 (totalBuy).toLocaleString('id'), (quantity).toLocaleString('id'), (sellPrice).toLocaleString('id'), (totalSell).toLocaleString('id'),
                                 (lr).toLocaleString('id')]);
 
@@ -174,6 +204,8 @@ function reloadTable() {
                             totalSection = totalSection + lr;
                             totalSellSection = totalSellSection + totalSell;
                             totalBuySection = totalBuySection + totalBuy;
+                            totalCountSellSection = totalCountSellSection + quantity;
+                            totalCountBuySection = totalCountBuySection + buyQuantity;
 
                             code = '';
                             nopo = '';
@@ -192,7 +224,9 @@ function reloadTable() {
                     });
 
                     total = total + totalSection;
-                    total = total + totalSection;
+                    totalCountSell = totalCountSell + totalCountSellSection;
+                    totalCountBuy = totalCountBuy + totalCountBuySection;
+
                     firstDate = true;
                     dateTotal = response.data[i].date;
                     total = total + totalSection;
@@ -200,8 +234,8 @@ function reloadTable() {
                     dateTotal = response.data[i].date;
                     styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
 
-                    ws_data.push(['', '', '', '', '', '', '',
-                        (totalBuySection).toLocaleString('id'), '', '', (totalSellSection).toLocaleString('id'),
+                    ws_data.push(['', '', '', '', '', totalCountBuySection, '',
+                        (totalBuySection).toLocaleString('id'), totalCountSellSection, '', (totalSellSection).toLocaleString('id'),
                         (totalSection).toLocaleString('id')]);
                     tableTrx.row.add([
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
@@ -209,10 +243,10 @@ function reloadTable() {
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
-                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>' + totalCountBuySection + '</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalBuySection).toLocaleString('id') + '</p>',
-                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>' + totalCountSellSection + '</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSellSection).toLocaleString('id') + '</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>' + (totalSection).toLocaleString('id') + '</p>'
@@ -240,10 +274,10 @@ function reloadTable() {
                     totalSellSection = 0;
                     totalBuySection = 0;
                 });
-                ws_data.push(['', '', '', '', '', '', '',
-                    '', '', '', 'Total',
-                    total.toLocaleString('id')]);
+                ws_data.push(['', '', '', '', 'Jumalh Beli', totalCountBuy, '', 'Jumlah Jual', totalCountSell, '', 'Total', total.toLocaleString('id')]);
                 styleTotal = total <= 0 ? 'class="bgred"' : '';
+                $('#total-beli').html('<p style="margin:0;padding:12px;">' + totalCountBuy + '</p>');
+                $('#total-jual').html('<p style="margin:0;padding:12px;">' + totalCountSell + '</p>');
                 $('#total').html('<p style="margin:0;padding:12px;" ' + styleTotal + '>' + total.toLocaleString('id') + '</p>');
             }
             $('#loading').hide();
