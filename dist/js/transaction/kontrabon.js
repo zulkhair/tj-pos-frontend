@@ -253,7 +253,7 @@ function initKontrabonEdit(){
                         response.data[i].date,
                         response.data[i].stakeholderName + "(" + response.data[i].stakeholderCode + ")",
                         response.data[i].total.toLocaleString('id'),
-                        '<input type="checkbox" id="checkbox1' + i + '">'
+                        '<input type="checkbox" id="checkboxEditRemove' + i + '">'
                     ]).draw(false);
 
                     setChkbx1Listener(i, response.data[i].id, response.data[i]);
@@ -307,7 +307,7 @@ function setChkbxListener(i, id, data) {
 }
 
 function setChkbx1Listener(i, id, data) {
-    const checkbox = document.getElementById('checkbox1' + i);
+    const checkbox = document.getElementById('checkboxEditRemove' + i);
     checkbox.addEventListener('change', (event) => {
         if (event.currentTarget.checked) {
             mapSelected.set(id, data);
@@ -490,7 +490,7 @@ function selectAll() {
 function selectAll2() {
     for (i in arrData) {
         mapSelected.set(arrData[i].id, arrData[i]);
-        $("#checkbox1" + i).prop("checked", true);
+        $("#checkboxEditRemove" + i).prop("checked", true);
     }
 }
 
