@@ -273,6 +273,8 @@ function reloadTable() {
                     totalSection = 0;
                     totalSellSection = 0;
                     totalBuySection = 0;
+                    totalCountSellSection = 0;
+                    totalCountBuySection = 0;
                 });
                 ws_data.push(['', '', '', '', 'Jumalh Beli', totalCountBuy, '', 'Jumlah Jual', totalCountSell, '', 'Total', total.toLocaleString('id')]);
                 styleTotal = total <= 0 ? 'class="bgred"' : '';
