@@ -234,11 +234,11 @@ function reloadTable() {
                     dateTotal = response.data[i].date;
                     styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
 
-                    ws_data.push(['', '', '', '', '', totalCountBuySection, '',
+                    ws_data.push(['Total', '', '', '', '', totalCountBuySection, '',
                         (totalBuySection).toLocaleString('id'), totalCountSellSection, '', (totalSellSection).toLocaleString('id'),
                         (totalSection).toLocaleString('id')]);
                     tableTrx.row.add([
-                        '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
+                        '<p style="padding:12px;margin:0" ' + styleSection + '>Total</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
                         '<p style="padding:12px;margin:0" ' + styleSection + '>&nbsp;</p>',
