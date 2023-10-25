@@ -52,7 +52,7 @@ function init() {
 function initData() {
     tableCustomer.clear();
     ws_data = [];
-    ws_data.push(['Kode', 'Nama', 'Deskripsi', 'Status']);
+    ws_data.push(['Kode', 'Nama', 'Saldo Awal', 'Deskripsi', 'Status']);
     $.ajax({
         type: "GET",
         url: "/api/customer/find",
@@ -65,12 +65,13 @@ function initData() {
                 html = '';
                 for (i in response.data) {
                     ws_data.push(
-                        [response.data[i].code, response.data[i].name, response.data[i].description, (response.data[i].active ? 'Aktif' : 'Tidak Aktif')]
+                        [response.data[i].code, response.data[i].name, response.data[i].initialBalance, response.data[i].description, (response.data[i].active ? 'Aktif' : 'Tidak Aktif')]
                     )
                     mapData[response.data[i].id] = response.data[i]
                     tableCustomer.row.add([
                         response.data[i].code,
                         response.data[i].name,
+                        response.data[i].initialBalance.toLocaleString('id'),
                         response.data[i].description,
                         (response.data[i].active ? 'Aktif' : 'Tidak Aktif'),
                         '<button ' + (edit ? '' : 'hidden') + 'type="button" class="btn-tbl btn btn-block btn-primary fas fa-toggle-off " title="Ubah status" data-toggle="modal" data-target="#edit-modal" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>',
@@ -119,6 +120,7 @@ function submit() {
     data["code"] = $("#code").val().trim();
     data["name"] = $("#name").val().trim();
     data["description"] = $("#description").val().trim();
+    data["initialBalance"] = parseInt($("#saldo").val().replaceAll('.', ''));
     token = getCookie("token")
 
     $.ajax({
@@ -154,6 +156,7 @@ function prepareEdit(id) {
     $("#code-edit").val(mapData[id].code);
     $("#name-edit").val(mapData[id].name);
     $("#description-edit").val(mapData[id].description);
+    $("#saldo-edit").val(mapData[id].initialBalance);
 
     active = mapData[id].active
     html = '<option value="true" ' + (active ? 'selected' : '') + '>Aktif</option>'
@@ -185,6 +188,7 @@ function editData() {
     data["name"] = $("#name-edit").val().trim();
     data["description"] = $("#description-edit").val().trim();
     data["active"] = $("#active-modal-select").val();
+    data["initialBalance"] = parseInt($("#saldo-edit").val().replaceAll('.', ''));
     token = getCookie("token")
 
     $.ajax({
@@ -229,4 +233,22 @@ function download() {
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'customer.xlsx');
 }
 
+
+function saldoChange() {
+    value = $("#saldo").val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#saldo").val(harga.toLocaleString('id'));
+}
+
+function saldoEditChange() {
+    value = $("#saldo-edit").val();
+    if (value == "" || value == undefined){
+        value = "0"
+    }
+    harga = parseInt(value.replaceAll('.', ''));
+    $("#saldo-edit").val(harga.toLocaleString('id'));
+}
 init();

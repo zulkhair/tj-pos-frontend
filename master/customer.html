@@ -140,6 +140,7 @@
                                     <tr>
                                         <th>Kode</th>
                                         <th>Nama</th>
+                                        <th>Saldo Awal</th>
                                         <th>Deskripsi</th>
                                         <th>Status</th>
                                         <th width="48px"></th>
@@ -178,6 +179,11 @@
                             <input type="text" class="form-control" id="name" placeholder="Nama Customer">
                         </div>
                         <div class="form-group">
+                            <label>Saldo Awal</label>
+                            <input type="text" class="form-control" id="saldo" placeholder="Saldo Awal"
+                                onkeyup="saldoChange();">
+                        </div>
+                        <div class="form-group">
                             <label>Deskripsi</label>
                             <input type="text" class="form-control" id="description" placeholder="Deskripsi Customer">
                         </div>
@@ -211,6 +217,11 @@
                         <div class="form-group">
                             <label>Nama</label>
                             <input type="text" class="form-control" id="name-edit" placeholder="Nama Customer">
+                        </div>
+                        <div class="form-group">
+                            <label>Saldo Awal</label>
+                            <input type="text" class="form-control" id="saldo-edit" placeholder="Saldo Awal"
+                                onkeyup="saldoEditChange();">
                         </div>
                         <div class="form-group">
                             <label>Deskripsi</label>
