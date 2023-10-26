@@ -141,6 +141,17 @@ function today() {
     return startDate;
 }
 
+function todayMonth() {
+    var date = new Date();
+    yyyy = date.getFullYear();
+    mm = date.getMonth() + 1;
+
+    if (mm < 10) mm = '0' + mm;
+
+    startDate = yyyy + '-' + mm
+    return startDate;
+}
+
 function endDate() {
     var date = new Date(), y = date.getFullYear(), m = date.getMonth();
     var lastDate = new Date(y, m + 1, 0);
