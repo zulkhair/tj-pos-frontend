@@ -126,28 +126,6 @@ function initHarga(productId, index) {
                     }
                 }
             });
-
-            $.ajax({
-                type: "GET",
-                url: "/api/supplier/find-price",
-                headers: { "token": token },
-                data: {
-                    "productId": productId,
-                    "latest": "true",
-                },
-                async: false,
-                success: function (response) {
-                    if (response.status != 0) {
-                        toastr.warning(response.message);
-                    } else {
-                        if (response.data) {
-                            $("#beli-" + index).val(response.data[0].price.toLocaleString('id'));
-                        } else {
-                            $("#beli-" + index).val(0);
-                        }
-                    }
-                }
-            });
         }
     }
 }
@@ -206,8 +184,7 @@ function addNewRow() {
         "productCodeName": "",
         "jumlah": "",
         "satuan": "",
-        "jual": "",
-        "beli": ""
+        "jual": ""
     })
     reloadTable(index);
 }
@@ -224,7 +201,6 @@ function reloadTable(indexnew) {
             getText("jumlah", index, "number", "0", "", "jumlahChange"),
             getText("satuan", index, "text", "-", "disabled", ""),
             getText("jual", index, "text", "0", "", "jualChange"),
-            getText("beli", index, "text", "0", "", "beliChange"),
             getText("total", index, "text", "0", "disabled", ""),
             '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-trash " title="Hapus" onclick="removeRow(\'' + index + ',' + arrIndex + '\');"></button>'
         ]).draw(false);
@@ -234,7 +210,6 @@ function reloadTable(indexnew) {
             $("#product-select-" + index).val(data.productCodeName);
             $("#jumlah-" + index).val(data.jumlah);
             $("#jual-" + index).val(parseInt(data.jual).toLocaleString('id'));
-            $("#beli-" + index).val(parseInt(data.beli).toLocaleString('id'));
             $("#satuan-" + index).val(data.satuan);
             $("#total-" + index).val((data.jual * data.jumlah).toLocaleString('id'));
         }
@@ -244,7 +219,6 @@ function reloadTable(indexnew) {
         var product = document.getElementById("product-select-" + index);
         var jumlah = document.getElementById("jumlah-" + index);
         var jual = document.getElementById("jual-" + index);
-        var beli = document.getElementById("beli-" + index);
 
         product.addEventListener("keypress", function (event) {
             if (event.key === "Enter") {
@@ -265,15 +239,6 @@ function reloadTable(indexnew) {
         });
 
         jual.addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                // Cancel the default action, if needed
-                event.preventDefault();
-
-                addNewRow();
-            }
-        });
-
-        beli.addEventListener("keypress", function (event) {
             if (event.key === "Enter") {
                 // Cancel the default action, if needed
                 event.preventDefault();
@@ -328,23 +293,11 @@ function jualChange(index) {
     sumTotal();
 }
 
-function beliChange(index) {
-    value = $("#beli-" + index).val();
-    if (value == "" || value == undefined) {
-        value = "0"
-    }
-    beli = parseInt(value.replaceAll('.', ''));
-    $("#beli-" + index).val(beli.toLocaleString('id'));
-
-    setMapData(index);
-}
-
 function setMapData(index) {
     data = mapData.get(index);
     data.productCodeName = $("#product-select-" + index).val();
     data.jumlah = $("#jumlah-" + index).val();
     data.jual = $("#jual-" + index).val().replaceAll('.', '');
-    data.beli = $("#beli-" + index).val().replaceAll('.', '');
     data.satuan = $("#satuan-" + index).val();
 
     mapData.set(index, data);
@@ -363,7 +316,7 @@ function submit() {
             detail.push(
                 {
                     "productId": product.id,
-                    "buyPrice": parseInt(data.beli),
+                    "buyPrice": 0,
                     "sellPrice": parseInt(data.jual),
                     "quantity": parseFloat(data.jumlah),
                 }
