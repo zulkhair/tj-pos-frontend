@@ -17,7 +17,10 @@ function initData(){
         type: "GET",
         url: "/api/transaction/findCustomerCredit",
         headers: { "token": token },
-        data: { "month": $('#month').val() },
+        data: { 
+            "month": $('#month').val(),
+            "sell": "true"
+        },
         async: false,
         success: function (response) {
             if (response.status != 0) {
@@ -83,7 +86,6 @@ function initData(){
         rowDataDownload.push(responseData.transactions[i].lastCredit);
         total = responseData.transactions[i].lastCredit;
         for (let index = 1; index <= responseData.days; index++) {
-
             if (responseData.transactions[i].credits != null && index in responseData.transactions[i].credits) {
                 rowData.push(responseData.transactions[i].credits[index].toLocaleString('id'));
                 rowDataDownload.push(responseData.transactions[i].credits[index]);
@@ -117,15 +119,15 @@ function initData(){
 function download() {
     var wb = XLSX.utils.book_new();
     wb.Props = {
-        Title: "Laporan Piutang",
-        Subject: "Laporan Piutang",
+        Title: "Laporan Penjualan",
+        Subject: "Laporan Penjualan",
         Author: "UD Tunas Jaya",
         CreatedDate: new Date(2017, 12, 19)
     };
 
-    wb.SheetNames.push("Laporan Piutang");
+    wb.SheetNames.push("Laporan Penjualan");
     var ws = XLSX.utils.aoa_to_sheet(ws_data);
-    wb.Sheets["Laporan Piutang"] = ws;
+    wb.Sheets["Laporan Penjualan"] = ws;
 
     var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
     function s2ab(s) {
@@ -136,7 +138,7 @@ function download() {
         return buf;
 
     }
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'laporan-piutang.xlsx');
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'laporan-penjualan.xlsx');
 }
 
 init();
