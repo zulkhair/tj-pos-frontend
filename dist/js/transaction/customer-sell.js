@@ -12,6 +12,7 @@ function init() {
 }
 
 function initData(){
+    $('#table-footer').html("");
     dataTable.clear().destroy();
     $.ajax({
         type: "GET",
