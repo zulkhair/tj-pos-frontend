@@ -138,6 +138,8 @@ function reloadTable() {
                 totalSection = 0;
                 totalSellSection = 0;
                 totalBuySection = 0;
+                totalSellFoot = 0;
+                totalBuyFoot = 0;
 
                 totalCountSellSection = 0;
                 totalCountBuySection = 0;
@@ -226,10 +228,11 @@ function reloadTable() {
                     total = total + totalSection;
                     totalCountSell = totalCountSell + totalCountSellSection;
                     totalCountBuy = totalCountBuy + totalCountBuySection;
+                    totalSellFoot = totalSellFoot + totalSellSection;
+                    totalBuyFoot = totalBuyFoot + totalBuySection;
 
                     firstDate = true;
                     dateTotal = response.data[i].date;
-                    total = total + totalSection;
                     firstDate = true;
                     dateTotal = response.data[i].date;
                     styleSection = totalSection <= 0 ? 'class="bgred"' : 'class="bggreen"';
@@ -276,10 +279,12 @@ function reloadTable() {
                     totalCountSellSection = 0;
                     totalCountBuySection = 0;
                 });
-                ws_data.push(['', '', '', '', 'Jumalh Beli', totalCountBuy, '', 'Jumlah Jual', totalCountSell, '', 'Total', total.toLocaleString('id')]);
+                ws_data.push(['', '', '', '', '', totalCountBuy, '', totalBuyFoot.toLocaleString('id'), totalCountSell, '', totalSellFoot.toLocaleString('id'), total.toLocaleString('id')]);
                 styleTotal = total <= 0 ? 'class="bgred"' : '';
                 $('#total-beli').html('<p style="margin:0;padding:12px;">' + totalCountBuy + '</p>');
                 $('#total-jual').html('<p style="margin:0;padding:12px;">' + totalCountSell + '</p>');
+                $('#total-harga-jual').html('<p style="margin:0;padding:12px;">' + totalSellFoot.toLocaleString('id') + '</p>');
+                $('#total-harga-beli').html('<p style="margin:0;padding:12px;">' + totalBuyFoot.toLocaleString('id') + '</p>');
                 $('#total').html('<p style="margin:0;padding:12px;" ' + styleTotal + '>' + total.toLocaleString('id') + '</p>');
             }
             $('#loading').hide();
