@@ -71,12 +71,17 @@ function initData(){
     ws_data.push(headerData);
     no = 0;
     totalAll = 0;
+    totalPerDate = [];
+    for (let index = 0; index <= responseData.days; index++) {
+        totalPerDate.push(0)
+    }
     for (i in responseData.transactions) {
         no = no + 1;
         rowData = [];
         rowData.push(no);
         rowData.push(responseData.transactions[i].customerCode);
         rowData.push(responseData.transactions[i].lastCredit.toLocaleString('id'));
+        totalPerDate[0] = totalPerDate[0] + responseData.transactions[i].lastCredit
 
         rowDataDownload = [];
         rowDataDownload.push(no);
@@ -84,11 +89,11 @@ function initData(){
         rowDataDownload.push(responseData.transactions[i].lastCredit);
         total = responseData.transactions[i].lastCredit;
         for (let index = 1; index <= responseData.days; index++) {
-
             if (responseData.transactions[i].credits != null && index in responseData.transactions[i].credits) {
                 rowData.push(responseData.transactions[i].credits[index].toLocaleString('id'));
                 rowDataDownload.push(responseData.transactions[i].credits[index]);
                 total += responseData.transactions[i].credits[index];
+                totalPerDate[index] = totalPerDate[index] + responseData.transactions[i].credits[index]
             } else {
                 rowData.push("");
                 rowDataDownload.push("");
@@ -103,13 +108,19 @@ function initData(){
         totalAll = totalAll + total;
     }
     totalDownload = new Array(responseData.days);
-    totalDownload[responseData.days+2] = "Total";
-    totalDownload[responseData.days+3] = totalAll;
+    totalDownload[1] = "Total";
+    for (let index = 0; index <= responseData.days; index++) {
+        totalDownload[2 + index] = totalPerDate[index]
+    }
+    totalDownload[responseData.days + 3] = totalAll;
     ws_data.push(totalDownload);
 
     tfoothtml = "<tr>";
-    tfoothtml += "<td colspan=\""+(3+responseData.days)+"\" style=\"text-align: right;\">Total</td>";
-    tfoothtml += "<td style=\"text-align: right;\">"+totalAll.toLocaleString('id')+"</td>";
+    tfoothtml += "<td colspan=\""+(2)+"\" style=\"text-align: right;\">Total</td>";
+    for (let index = 0; index <= responseData.days; index++) {
+        tfoothtml += "<td style=\"text-align: right;\">" + totalPerDate[index].toLocaleString('id') + "</td>";
+    }
+    tfoothtml += "<td style=\"text-align: right;\">" + totalAll.toLocaleString('id') + "</td>";
     tfoothtml += "</tr>";
 
     $('#table-footer').html(tfoothtml);
