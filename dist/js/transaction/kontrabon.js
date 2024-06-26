@@ -147,18 +147,25 @@ function initKontrabon() {
                 no = 0;
                 for (i in response.data) {
                     no = no + 1;
-                    btnDisabled = response.data[i].status == "CREATED" ? "" : "disabled"
+                    isCreated = response.data[i].status == "CREATED"
+                    btnDisabled = isCreated ? "" : "disabled"
+
                     buttonEdit = '<button  type="button" class="btn-tbl btn btn-block btn-primary fas fa-pencil " title="Edit Data" onclick="prepareEdit(\'' + response.data[i].id + '\');"></button>'
                     buttonPrint = '<button type="button" class="btn-tbl btn btn-block btn-primary fas fa-receipt " title="Cetak" onclick="printKontrabon(\'' + response.data[i].id + '\');"></button>';
-                    buttonLunas = '<button ' + btnDisabled + ' data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
+                    buttonLunas = '';
+                    if (isCreated) {
+                        buttonLunas = '<button ' + btnDisabled + ' data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-primary fas fa-check " title="Ubah Status ke Lunas" onclick="prepareLunas(\'' + response.data[i].id + '\');"></button>';
+                    } else {
+                        buttonLunas = '<button data-toggle="modal" data-target="#lunas-modal" type="button" class="btn-tbl btn btn-block btn-success fas fa-edit " title="Ubah Pembayaran" onclick="prepareEditLunas(\'' + response.data[i].id + '\');"></button>';
+                    }
                     mapKontrabon.set(response.data[i].id, response.data[i]);
                     tableKontrabon.row.add([
                         no,
                         mapCustomer.get(response.data[i].customerId).code,
                         response.data[i].code,
-                        response.data[i].createdTime,                        
+                        response.data[i].createdTime,
                         response.data[i].total.toLocaleString('id'),
-                        !response.data[i].paymentDate ? "" : response.data[i].paymentDate, 
+                        !response.data[i].paymentDate ? "" : response.data[i].paymentDate,
                         !response.data[i].totalPayment ? "" : response.data[i].totalPayment.toLocaleString('id'),
                         response.data[i].status == "CREATED" ? "BELUM DIBAYAR" : "LUNAS",
                         buttonEdit + buttonPrint + buttonLunas
@@ -224,7 +231,7 @@ function initTrxEdit() {
     initKontrabonEdit();
 }
 
-function initKontrabonEdit(){
+function initKontrabonEdit() {
     tableTrxEdit1.clear().draw();
     mapSelected = new Map();
     tableTrxEdit.clear().draw();
@@ -435,7 +442,7 @@ function removeKontrabon() {
 
 function totBayarChange() {
     value = $("#total-payment").val();
-    if (value == "" || value == undefined){
+    if (value == "" || value == undefined) {
         value = "0"
     }
     harga = parseInt(value.replaceAll('.', ''));
@@ -469,6 +476,19 @@ function submitLunas() {
 
 function prepareLunas(id) {
     selectedKontrabonId = id;
+}
+
+function prepareEditLunas(id) {
+    selectedKontrabonId = id;
+
+    $("#total-payment").val(mapKontrabon.get(id).totalPayment.toLocaleString('id'));
+   
+    // Split the input date string by the hyphen
+    let parts = mapKontrabon.get(id).paymentDate.split('-');
+
+    // Rearrange and join the parts in the desired format
+    let formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    $("#payment-date").val(formattedDate);
 }
 
 function prepareEdit(id) {
