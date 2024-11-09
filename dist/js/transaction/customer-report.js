@@ -176,6 +176,15 @@ function changeKontrabon() {
     }
     kontrabon = mapKontrabon.get(kontrabonId);
     $('#kontrabon-val').val(kontrabon.total.toLocaleString('id'));
+
+    // check paymentDate is null
+    if (kontrabon.paymentDate == null) {
+        $('#kontrabon-cair').val("");
+        $('#kontrabon-cair-val').val("0");
+        $('#sisa').val(kontrabon.total.toLocaleString('id'));
+        return;
+    }
+    
     $('#kontrabon-cair').val(kontrabon.paymentDate);
     $('#kontrabon-cair-val').val(kontrabon.totalPayment.toLocaleString('id'));
     $('#sisa').val((kontrabon.total - kontrabon.totalPayment).toLocaleString('id'));
