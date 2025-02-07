@@ -21,6 +21,11 @@ function init() {
                 for (i in response.data.menu) {
                     menu = response.data.menu[i]
 
+                    // Mobile menu is not shown in the sidebar
+                    if (menu.name == "Mobile") {
+                        continue;
+                    }
+
                     menuActive = "";
                     menuOpen = "";
                     paths = menu.path.split(";");
