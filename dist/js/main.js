@@ -22,7 +22,7 @@ function init() {
                     menu = response.data.menu[i]
 
                     // Mobile menu is not shown in the sidebar
-                    if (menu.name == "Mobile") {
+                    if (menu.path == "") {
                         continue;
                     }
 

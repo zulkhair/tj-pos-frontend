@@ -184,9 +184,13 @@ function reloadTable() {
                                 (totalBuy).toLocaleString('id'), (quantity).toLocaleString('id'), (sellPrice).toLocaleString('id'), (totalSell).toLocaleString('id'),
                                 (lr).toLocaleString('id')]);
 
-                            priceColumn = '<a href="#" data-toggle="modal" data-target="#edit-beli-modal" onclick="prepareEdit(\'' + item3.id + '\', ' + count + ');"><p style="' + stylerow + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p></a>';
+                            styleBuyPrice = "";
+                            if (buyPrice == 0) {
+                                styleBuyPrice = 'background-color: yellow;';
+                            }
+                            priceColumn = '<a href="#" data-toggle="modal" data-target="#edit-beli-modal" onclick="prepareEdit(\'' + item3.id + '\', ' + count + ');"><p style="' + styleBuyPrice + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p></a>';
                             if (!edit) {
-                                priceColumn = '<p style="' + stylerow + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p>';
+                                priceColumn = '<p style="' + styleBuyPrice + 'padding:12px;margin:0">' + (buyPrice).toLocaleString('id') + '</p>';
                             }
                             tableTrx.row.add([
                                 '<p style="' + stylerow + 'padding:12px;margin:0">' + date + '</p>',
