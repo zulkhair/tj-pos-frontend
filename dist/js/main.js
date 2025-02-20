@@ -20,12 +20,6 @@ function init() {
                 menuhtml = ""
                 for (i in response.data.menu) {
                     menu = response.data.menu[i]
-
-                    // Mobile menu is not shown in the sidebar
-                    if (menu.path == "") {
-                        continue;
-                    }
-
                     menuActive = "";
                     menuOpen = "";
                     paths = menu.path.split(";");
@@ -43,6 +37,11 @@ function init() {
 
                     for (j in menu.subMenu) {
                         submenu = menu.subMenu[j]
+
+                        // Mobile menu is not shown in the sidebar
+                        if (submenu.outcome == "") {
+                            continue;
+                        }
 
                         subMenuActive = fullPath == submenu.outcome ? "active" : "";
                         menuhtml = menuhtml + '<li class="nav-item"><a href="' + submenu.outcome + '" class="nav-link ' + subMenuActive + '"><i class="far ' + submenu.icon + ' nav-icon"></i><p>' + submenu.name + '</p></a></li>';
